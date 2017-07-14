@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="style.css">
 		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="jquery-1.11.3.js"></script>
 		<script src="jquery.fullPage.min.js"></script>
 		<link rel="stylesheet" href="jquery.fullPage.css">
 	</head>
 	<body>
-		<div id="navbar">
-			<a href="#page1">1</a>
-			<a href="#page2">2</a>
-			<a href="#page2/slide2-1">2-1</a>
-			<a href="#page2/slide2-2">2-2</a>
-			<a href="#page2/slide2-3">2-3</a>
-			<a href="#page3">3</a>
-			<a href="#page4">4</a>
-		</div>
 		<div id="wrapper">
 			<div class="section" data-anchor="page1">Section 1</div>
 			<div class="section" data-anchor="page2">
@@ -29,7 +19,12 @@
 		</div>
 		<script>
 			$(document).ready(function() {
-				$('#wrapper').fullpage();
+				$('#wrapper').fullpage({
+					sectionsColor: ['#f1f3f4', '#f1f3f4', '#f1f3f4', '#f1f3f4'],
+					navigation: true,
+					navigationPosition: 'right',
+					navigationTooltips: ['Page1', 'Page2', 'Page3', 'Page4']
+				});
 			});
 		</script>
 	</body>
