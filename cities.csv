@@ -1,10 +1,10 @@
 Country_Name,Country_Code,Region,Year,Fertility_Rate
-Afghanistan,AFG,South Asia,1960,7.45
-Afghanistan,AFG,South Asia,2000,7.496
-Afghanistan,AFG,South Asia,2015,4.653
-Brazil,BRA,Latin America & Caribbean,1960,6.21
-Brazil,BRA,Latin America & Caribbean,2000,2.318
-Brazil,BRA,Latin America & Caribbean,2015,1.778
-China,CHN,East Asia & Pacific,1960,5.754
-China,CHN,East Asia & Pacific,2000,1.447
-China,CHN,East Asia & Pacific,2015,1.569
+Afghanistan,AFG,South Asia,1960,7.5
+Afghanistan,AFG,South Asia,2000,5.5
+Afghanistan,AFG,South Asia,2015,8
+Brazil,BRA,Latin America & Caribbean,1960,6.25
+Brazil,BRA,Latin America & Caribbean,2000,2.25
+Brazil,BRA,Latin America & Caribbean,2015,1.25
+China,CHN,East Asia & Pacific,1960,5
+China,CHN,East Asia & Pacific,2000,3
+China,CHN,East Asia & Pacific,2015,4
