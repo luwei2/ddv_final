@@ -191,7 +191,7 @@
 					    .attr('stroke-width', 2)
 					    .attr('fill', 'none')
 					    .attr('clip-path', 'url(#clip)')
-						.attr("d", lineGen);
+						.attr("d", lineGen(d.values));
 
 					context.append("path")
 						.datum(d.values)
@@ -200,7 +200,7 @@
 						.attr('stroke-width', 2)
 					    .attr('fill', 'none')
 					    .attr('clip-path', 'url(#clip)')
-						.attr("d", lineGen2);
+						.attr("d", lineGen2(d.values));
 				});
 
 
@@ -235,7 +235,7 @@
 					if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
 					var s = d3.event.selection || xScale2.range();
 					xScale.domain(s.map(xScale2.invert, xScale2));
-					focus.select(".line").attr("d", lineGen);
+					focus.selectAll(".line").attr("d", lineGen);
 					focus.select(".axis--x").call(xAxis);
 					vis.select(".zoom").call(zoom.transform, d3.zoomIdentity
 					  .scale(WIDTH / (s[1] - s[0]))
@@ -246,7 +246,7 @@
 					if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
 					var t = d3.event.transform;
 					xScale.domain(t.rescaleX(xScale2).domain());
-					focus.select(".line").attr("d", lineGen);
+					focus.selectAll(".line").attr("d", lineGen);
 					focus.select(".axis--x").call(xAxis);
 					context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t));
 				}
