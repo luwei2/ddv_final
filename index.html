@@ -45,7 +45,7 @@
 				});
 			});
 
-			d3.csv("https://fvargaspiedra.github.io/cities2.csv", function(data) {
+			d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {
 				
 				var parseDate = d3.timeParse("%Y");
 
@@ -54,11 +54,11 @@
 					d.Year = parseDate(d.Year);
 				});
 
-				// var dataGroup = d3.nest()
-				//     .key(function(d) {
-				//         return d.Country_Name;
-				//     })
-				//     .entries(data);
+				var dataGroup = d3.nest()
+				    .key(function(d) {
+				        return d.Country_Name;
+				    })
+				    .entries(data);
 
 				var vis = d3.select("#byCountryFertilityRate"),
 					MARGINS = {
@@ -97,6 +97,8 @@
 					xAxis2 = d3.axisBottom(xScale2),
 					yAxis = d3.axisLeft(yScale);
 	    			//lSpace = WIDTH/dataGroup.length,
+
+				var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 				var brush = d3.brushX()
 				    .extent([[0, 0], [WIDTH, HEIGHT2]])
@@ -153,7 +155,7 @@
 				// 	.y(function(d) {
 				// 	return yScale(d.Fertility_Rate);
 				// 	});
-				// dataGroup.forEach(function(d, i) {
+
 					xScale.domain([d3.min(data, function(d) {
 							return d.Year;
 					}), d3.max(data, function(d) {
@@ -163,16 +165,44 @@
 					xScale2.domain(xScale.domain());
 					yScale2.domain(yScale.domain());
 
+
+				dataGroup.forEach(function(d, i) {
+
+					// focus.append('svg:path')
+					//     .attr('d', lineGen(d.values))
+					//     .attr('stroke', function(d, j) {
+				 //            return "hsl(" + Math.random() * 360 + ",100%,50%)";
+				 //        })
+					//     .attr('stroke-width', 2)
+					//     .attr('fill', 'none')
+
+					// focus.append('svg:path')
+					//     .attr('d', lineGen2(d.values))
+					//     .attr('stroke', function(d, j) {
+				 //            return "hsl(" + Math.random() * 360 + ",100%,50%)";
+				 //        })
+					//     .attr('stroke-width', 2)
+					//     .attr('fill', 'none')
+
 					focus.append("path")
-						.datum(data)
+						.datum(d.values)
 						.attr("class", "line")
-						.attr('stroke', function(d, j) {
-				            return "hsl(" + Math.random() * 360 + ",100%,50%)";
-				        })
+						.attr('stroke', color(i))
 					    .attr('stroke-width', 2)
 					    .attr('fill', 'none')
 					    .attr('clip-path', 'url(#clip)')
 						.attr("d", lineGen);
+
+					context.append("path")
+						.datum(d.values)
+						.attr("class", "line")
+						.attr('stroke', color(i))
+						.attr('stroke-width', 2)
+					    .attr('fill', 'none')
+					    .attr('clip-path', 'url(#clip)')
+						.attr("d", lineGen2);
+				});
+
 
 					focus.append("g")
 						.attr("class", "axis axis--x")
@@ -182,17 +212,6 @@
 					focus.append("g")
 						.attr("class", "axis axis--y")
 						.call(yAxis);
-
-					context.append("path")
-						.datum(data)
-						.attr("class", "line")
-						.attr('stroke', function(d, j) {
-				            return "hsl(" + Math.random() * 360 + ",100%,50%)";
-				        })
-						.attr('stroke-width', 2)
-					    .attr('fill', 'none')
-					    .attr('clip-path', 'url(#clip)')
-						.attr("d", lineGen2);
 
 					context.append("g")
 						.attr("class", "axis axis--x")
@@ -210,7 +229,7 @@
 						.attr("height", HEIGHT)
 						.attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
 						.call(zoom);
-				// });
+
 
 				function brushed() {
 					if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
@@ -231,12 +250,6 @@
 					focus.select(".axis--x").call(xAxis);
 					context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t));
 				}
-
-				// function type(d) {
-				// 	d.date = parseDate(d.date);
-				// 	d.price = +d.price;
-				// 	return d;
-				// }
 
 				// dataGroup.forEach(function(d, i) {
 				// 	vis.append('svg:path')
