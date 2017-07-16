@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="style.css">
-		<script src="https://d3js.org/d3.v3.min.js"></script>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="jquery-1.11.3.js"></script>
 		<script src="jquery.fullPage.min.js"></script>
 		<link rel="stylesheet" href="jquery.fullPage.css">
@@ -45,51 +45,70 @@
 				});
 			});
 
-			d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {
+			d3.csv("https://fvargaspiedra.github.io/cities2.csv", function(data) {
+				
+				var parseDate = d3.timeParse("%Y");
+
 				data.forEach(function(d) {
 					d.Fertility_Rate = +d.Fertility_Rate;
-					d.Year = +d.Year;
+					d.Year = parseDate(d.Year);
 				});
 
-				var dataGroup = d3.nest()
-				    .key(function(d) {
-				        return d.Country_Name;
-				    })
-				    .entries(data);
+				// var dataGroup = d3.nest()
+				//     .key(function(d) {
+				//         return d.Country_Name;
+				//     })
+				//     .entries(data);
 
 				var vis = d3.select("#byCountryFertilityRate"),
-					WIDTH = 1000,
-					HEIGHT = 500,
 					MARGINS = {
-						top: 50,
+						top: 20,
 						right: 20,
-						bottom: 50,
-						left: 50
+						bottom: 110,
+						left: 40
 					},
-					xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(data, function(d) {
-							return d.Year;
-					}), d3.max(data, function(d) {
-						return d.Year;
-					})]),
-					yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, d3.max(data, function(d) {
-					    return d.Fertility_Rate;
-					})]),
-					xAxis = d3.svg.axis()
-	    				.scale(xScale),
-					yAxis = d3.svg.axis()
-	    				.scale(yScale)
-	    				.orient("left"),
-	    			lSpace = WIDTH/dataGroup.length;
+					MARGINS2 = {
+						top: 430,
+						right: 20,
+						bottom: 30,
+						left: 40
+					},
+					WIDTH = +vis.attr("width") - MARGINS.left - MARGINS.right,
+					HEIGHT = +vis.attr("height") - MARGINS.top - MARGINS.bottom,
+					HEIGHT2 = +vis.attr("height") - MARGINS2.top - MARGINS2.bottom,
+					// xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(data, function(d) {
+					// 		return d.Year;
+					// }), d3.max(data, function(d) {
+					// 	return d.Year;
+					// })]),
+					// yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, d3.max(data, function(d) {
+					//     return d.Fertility_Rate;
+					// })]),
+					// xAxis = d3.svg.axis()
+	    // 				.scale(xScale),
+					// yAxis = d3.svg.axis()
+	    // 				.scale(yScale)
+	    // 				.orient("left"),
+					xScale = d3.scaleTime().range([0, WIDTH]),
+					xScale2 = d3.scaleTime().range([0, WIDTH]),
+					yScale = d3.scaleLinear().range([HEIGHT, 0]),
+					yScale2 = d3.scaleLinear().range([HEIGHT2, 0]),
+					xAxis = d3.axisBottom(xScale),
+					xAxis2 = d3.axisBottom(xScale2),
+					yAxis = d3.axisLeft(yScale);
+	    			//lSpace = WIDTH/dataGroup.length,
 
-				vis.append("svg:g")
-				    .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
-				    .call(xAxis);
+				var brush = d3.brushX()
+				    .extent([[0, 0], [WIDTH, HEIGHT2]])
+				    .on("brush end", brushed);
 
-				vis.append("svg:g")
-					.attr("transform", "translate(" + (MARGINS.left) + ",0)")
-				    .call(yAxis);
-
-				var lineGen = d3.svg.line()
+				var zoom = d3.zoom()
+				    .scaleExtent([1, Infinity])
+				    .translateExtent([[0, 0], [WIDTH, HEIGHT]])
+				    .extent([[0, 0], [WIDTH, HEIGHT]])
+				    .on("zoom", zoomed);
+				
+				var lineGen = d3.line()
 					.x(function(d) {
 					return xScale(d.Year);
 					})
@@ -97,35 +116,151 @@
 					return yScale(d.Fertility_Rate);
 					});
 
-				// vis.append('svg:path')
-				// 	.attr('d', lineGen(data))
-				// 	.attr('stroke', 'green')
-				// 	.attr('stroke-width', 2)
-				// 	.attr('fill', 'none');
+				var lineGen2 = d3.line()
+					.x(function(d) {
+					return xScale2(d.Year);
+					})
+					.y(function(d) {
+					return yScale2(d.Fertility_Rate);
+					});
 
-				dataGroup.forEach(function(d, i) {
-					vis.append('svg:path')
-					    .attr('d', lineGen(d.values))
-					    .attr('stroke', function(d, j) {
+				vis.append("defs").append("clipPath")
+				    .attr("id", "clip")
+				  .append("rect")
+				    .attr("width", WIDTH)
+				    .attr("height", HEIGHT);
+
+				var focus = vis.append("g")
+				    .attr("class", "focus")
+				    .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")");
+
+				var context = vis.append("g")
+				    .attr("class", "context")
+				    .attr("transform", "translate(" + MARGINS2.left + "," + MARGINS2.top + ")");
+
+				// vis.append("svg:g")
+				//     .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
+				//     .call(xAxis);
+
+				// vis.append("svg:g")
+				// 	.attr("transform", "translate(" + (MARGINS.left) + ",0)")
+				//     .call(yAxis);
+
+				// var lineGen = d3.svg.line()
+				// 	.x(function(d) {
+				// 	return xScale(d.Year);
+				// 	})
+				// 	.y(function(d) {
+				// 	return yScale(d.Fertility_Rate);
+				// 	});
+				// dataGroup.forEach(function(d, i) {
+					xScale.domain([d3.min(data, function(d) {
+							return d.Year;
+					}), d3.max(data, function(d) {
+							return d.Year;
+					})])
+					yScale.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; })]);
+					xScale2.domain(xScale.domain());
+					yScale2.domain(yScale.domain());
+
+					focus.append("path")
+						.datum(data)
+						.attr("class", "line")
+						.attr('stroke', function(d, j) {
 				            return "hsl(" + Math.random() * 360 + ",100%,50%)";
 				        })
 					    .attr('stroke-width', 2)
 					    .attr('fill', 'none')
-					    .attr('id', 'line_'+d.key);
-					vis.append("text")
-					    .attr("x", (lSpace / 2) + i * lSpace)
-					    .attr("y", HEIGHT)
-					    .style("fill", "black")
-					    .text(d.key)
-						.on('click', function() {
-						    var active = d.active ? false : true;
-						    var opacity = active ? 0 : 1;
+					    .attr('clip-path', 'url(#clip)')
+						.attr("d", lineGen);
+
+					focus.append("g")
+						.attr("class", "axis axis--x")
+						.attr("transform", "translate(0," + HEIGHT + ")")
+						.call(xAxis);
+
+					focus.append("g")
+						.attr("class", "axis axis--y")
+						.call(yAxis);
+
+					context.append("path")
+						.datum(data)
+						.attr("class", "line")
+						.attr('stroke', function(d, j) {
+				            return "hsl(" + Math.random() * 360 + ",100%,50%)";
+				        })
+						.attr('stroke-width', 2)
+					    .attr('fill', 'none')
+					    .attr('clip-path', 'url(#clip)')
+						.attr("d", lineGen2);
+
+					context.append("g")
+						.attr("class", "axis axis--x")
+						.attr("transform", "translate(0," + HEIGHT2 + ")")
+						.call(xAxis2);
+
+					context.append("g")
+						.attr("class", "brush")
+						.call(brush)
+						.call(brush.move, xScale.range());
+
+					vis.append("rect")
+						.attr("class", "zoom")
+						.attr("width", WIDTH)
+						.attr("height", HEIGHT)
+						.attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
+						.call(zoom);
+				// });
+
+				function brushed() {
+					if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+					var s = d3.event.selection || xScale2.range();
+					xScale.domain(s.map(xScale2.invert, xScale2));
+					focus.select(".line").attr("d", lineGen);
+					focus.select(".axis--x").call(xAxis);
+					vis.select(".zoom").call(zoom.transform, d3.zoomIdentity
+					  .scale(WIDTH / (s[1] - s[0]))
+					  .translate(-s[0], 0));
+				}
+
+				function zoomed() {
+					if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+					var t = d3.event.transform;
+					xScale.domain(t.rescaleX(xScale2).domain());
+					focus.select(".line").attr("d", lineGen);
+					focus.select(".axis--x").call(xAxis);
+					context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t));
+				}
+
+				// function type(d) {
+				// 	d.date = parseDate(d.date);
+				// 	d.price = +d.price;
+				// 	return d;
+				// }
+
+				// dataGroup.forEach(function(d, i) {
+				// 	vis.append('svg:path')
+				// 	    .attr('d', lineGen(d.values))
+				// 	    .attr('stroke', function(d, j) {
+				//             return "hsl(" + Math.random() * 360 + ",100%,50%)";
+				//         })
+				// 	    .attr('stroke-width', 2)
+				// 	    .attr('fill', 'none')
+				// 	    .attr('id', 'line_'+d.key);
+				// 	vis.append("text")
+				// 	    .attr("x", (lSpace / 2) + i * lSpace)
+				// 	    .attr("y", HEIGHT)
+				// 	    .style("fill", "black")
+				// 	    .text(d.key)
+				// 		.on('click', function() {
+				// 		    var active = d.active ? false : true;
+				// 		    var opacity = active ? 0 : 1;
 						 
-						    d3.select("#line_" + d.key).style("opacity", opacity);
+				// 		    d3.select("#line_" + d.key).style("opacity", opacity);
 						 
-						    d.active = active;
-						});
-				});
+				// 		    d.active = active;
+				// 		});
+				// });
 
 			});
 
