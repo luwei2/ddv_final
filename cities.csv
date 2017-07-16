@@ -1,5 +1,10 @@
-city,state,population,land area
-seattle,WA,652405,83.9
-new york,NY,8405837,302.6
-boston,MA,645966,48.3
-kansas city,MO,467007,315.0
+Country_Name,Country_Code,Region,Year,Fertility_Rate
+Afghanistan,AFG,South Asia,1960,7.45
+Afghanistan,AFG,South Asia,2000,7.496
+Afghanistan,AFG,South Asia,2015,4.653
+Brazil,BRA,Latin America & Caribbean,1960,6.21
+Brazil,BRA,Latin America & Caribbean,2000,2.318
+Brazil,BRA,Latin America & Caribbean,2015,1.778
+China,CHN,East Asia & Pacific,1960,5.754
+China,CHN,East Asia & Pacific,2000,1.447
+China,CHN,East Asia & Pacific,2015,1.569
