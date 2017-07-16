@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="style.css">
-		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://d3js.org/d3.v3.min.js"></script>
 		<script src="jquery-1.11.3.js"></script>
 		<script src="jquery.fullPage.min.js"></script>
 		<link rel="stylesheet" href="jquery.fullPage.css">
@@ -23,7 +23,7 @@
 					Total fertility rate has changed over time... But how? Explore it by yourself
 				</div>
 				<div class="slide">
-					Put interactive graph here.
+						<svg id="byCountryFertilityRate" width="1000" height="500"></svg>
 				</div>
 			</div>
 			<div class="section">
@@ -35,6 +35,7 @@
 			<div class="section">Section 4</div>
 		</div>
 		<script>
+
 			$(document).ready(function() {
 				$('#wrapper').fullpage({
 					sectionsColor: ['#f1f3f4', '#f1f3f4', '#f1f3f4', '#f1f3f4'],
@@ -43,6 +44,107 @@
 					navigationTooltips: ['Page1', 'Page2', 'Page3', 'Page4']
 				});
 			});
+
+			d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {
+				data.forEach(function(d) {
+					d.Fertility_Rate = +d.Fertility_Rate;
+					d.Year = +d.Year;
+				});
+
+				var dataGroup = d3.nest()
+				    .key(function(d) {
+				        return d.Country_Name;
+				    })
+				    .entries(data);
+
+				var vis = d3.select("#byCountryFertilityRate"),
+					WIDTH = 1000,
+					HEIGHT = 500,
+					MARGINS = {
+						top: 50,
+						right: 20,
+						bottom: 50,
+						left: 50
+					},
+					xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(data, function(d) {
+							return d.Year;
+					}), d3.max(data, function(d) {
+						return d.Year;
+					})]),
+					yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, d3.max(data, function(d) {
+					    return d.Fertility_Rate;
+					})]),
+					xAxis = d3.svg.axis()
+	    				.scale(xScale),
+					yAxis = d3.svg.axis()
+	    				.scale(yScale)
+	    				.orient("left"),
+	    			lSpace = WIDTH/dataGroup.length;
+
+				vis.append("svg:g")
+				    .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
+				    .call(xAxis);
+
+				vis.append("svg:g")
+					.attr("transform", "translate(" + (MARGINS.left) + ",0)")
+				    .call(yAxis);
+
+				var lineGen = d3.svg.line()
+					.x(function(d) {
+					return xScale(d.Year);
+					})
+					.y(function(d) {
+					return yScale(d.Fertility_Rate);
+					});
+
+				// vis.append('svg:path')
+				// 	.attr('d', lineGen(data))
+				// 	.attr('stroke', 'green')
+				// 	.attr('stroke-width', 2)
+				// 	.attr('fill', 'none');
+
+				dataGroup.forEach(function(d, i) {
+					vis.append('svg:path')
+					    .attr('d', lineGen(d.values))
+					    .attr('stroke', function(d, j) {
+				            return "hsl(" + Math.random() * 360 + ",100%,50%)";
+				        })
+					    .attr('stroke-width', 2)
+					    .attr('fill', 'none')
+					    .attr('id', 'line_'+d.key);
+					vis.append("text")
+					    .attr("x", (lSpace / 2) + i * lSpace)
+					    .attr("y", HEIGHT)
+					    .style("fill", "black")
+					    .text(d.key)
+						.on('click', function() {
+						    var active = d.active ? false : true;
+						    var opacity = active ? 0 : 1;
+						 
+						    d3.select("#line_" + d.key).style("opacity", opacity);
+						 
+						    d.active = active;
+						});
+				});
+
+			});
+
+			// data = d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {
+			// 	data.forEach(function(d) {
+			// 		d.population = +d.population;
+			// 		d["land area"] = +d["land area"];
+			// 	});
+
+			// 	d3.select(".chart")
+			// 		.selectAll("rect")
+			// 		.data(data)
+			// 		.enter().append("rect")
+			// 		.attr("width",19)
+			// 		.attr("height", function(d) { return d.population/10000 })
+			// 		.attr("x", function(d,i) { return 20*i })
+			// 		.attr("y", function(d) { return 420 - d.population/10000 });
+			// });
+
 		</script>
 	</body>
 </html>
