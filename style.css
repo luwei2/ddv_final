@@ -17,3 +17,8 @@
   pointer-events: all;
 }
 
+.legend {
+    font-size: 12px;
+    font-weight: normal;
+    text-anchor: left;
+}
