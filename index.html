@@ -45,145 +45,114 @@
 				});
 			});
 
-			d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {
-				
-				var parseDate = d3.timeParse("%Y");
+			// ***************************************************
+			// ******* FERTILITY RATE BY COUNTRY OVERVIEW ********
+			// ***************************************************
 
+			// ******** Variable definition *********	
+			
+			// Parse time for yearly data		
+			var parseDate = d3.timeParse("%Y");
+
+			// SVG to be modified selection
+			var vis = d3.select("#byCountryFertilityRate");
+
+			// Dimensions
+			var	MARGINS = { top: 20, right: 20, bottom: 110, left: 40 },
+				MARGINS2 = { top: 430, right: 20, bottom: 30, left: 40 },
+				WIDTH = +vis.attr("width") - MARGINS.left - MARGINS.right,
+				HEIGHT = +vis.attr("height") - MARGINS.top - MARGINS.bottom,
+				HEIGHT2 = +vis.attr("height") - MARGINS2.top - MARGINS2.bottom;
+
+			// Scales
+			var xScale = d3.scaleTime().range([0, WIDTH]),
+				xScale2 = d3.scaleTime().range([0, WIDTH]),
+				yScale = d3.scaleLinear().range([HEIGHT, 0]),
+				yScale2 = d3.scaleLinear().range([HEIGHT2, 0]);
+
+			// Axis
+			var	xAxis = d3.axisBottom(xScale),
+				xAxis2 = d3.axisBottom(xScale2),
+				yAxis = d3.axisLeft(yScale);
+
+			// Line color
+			var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+			// Define brush call
+			var brush = d3.brushX()
+			    .extent([[0, 0], [WIDTH, HEIGHT2]])
+			    .on("brush end", brushed);
+
+			// Define zoom call
+			var zoom = d3.zoom()
+			    .scaleExtent([1, Infinity])
+			    .translateExtent([[0, 0], [WIDTH, HEIGHT]])
+			    .extent([[0, 0], [WIDTH, HEIGHT]])
+			    .on("zoom", zoomed);
+
+			// Append class focus that will be used to draw the charts
+			var focus = vis.append("g")
+			    .attr("class", "focus")
+			    .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")");
+
+			// Append class context that will be used to draw the charts in the context bar
+			var context = vis.append("g")
+			    .attr("class", "context")
+			    .attr("transform", "translate(" + MARGINS2.left + "," + MARGINS2.top + ")");
+
+			// Line definition for focus section
+			var lineGen = d3.line()
+				.x(function(d) {
+				return xScale(d.Year);
+				})
+				.y(function(d) {
+				return yScale(d.Fertility_Rate);
+				});
+
+			// Line definition for context section
+			var lineGen2 = d3.line()
+				.x(function(d) {
+				return xScale2(d.Year);
+				})
+				.y(function(d) {
+				return yScale2(d.Fertility_Rate);
+				});
+
+			// ******** Append section *********	
+
+			// clipPath for context bar
+			vis.append("defs").append("clipPath")
+			    .attr("id", "clip")
+			  .append("rect")
+			    .attr("width", WIDTH)
+			    .attr("height", HEIGHT);
+
+			// ******** Multi-line graph creation *********
+
+			// Source of information
+			d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {	
+				// Parse Year and convert Fertility Rate into number
 				data.forEach(function(d) {
 					d.Fertility_Rate = +d.Fertility_Rate;
 					d.Year = parseDate(d.Year);
 				});
 
+				// Nest data based on Country Name
 				var dataGroup = d3.nest()
 				    .key(function(d) {
 				        return d.Country_Name;
 				    })
 				    .entries(data);
+			
+				// Set domain for ranges dynamically based on data
+				xScale.domain([d3.min(data, function(d) { return d.Year; }), d3.max(data, function(d) { return d.Year; })])
+				yScale.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; })]);
+				xScale2.domain(xScale.domain());
+				yScale2.domain(yScale.domain());
 
-				var vis = d3.select("#byCountryFertilityRate"),
-					MARGINS = {
-						top: 20,
-						right: 20,
-						bottom: 110,
-						left: 40
-					},
-					MARGINS2 = {
-						top: 430,
-						right: 20,
-						bottom: 30,
-						left: 40
-					},
-					WIDTH = +vis.attr("width") - MARGINS.left - MARGINS.right,
-					HEIGHT = +vis.attr("height") - MARGINS.top - MARGINS.bottom,
-					HEIGHT2 = +vis.attr("height") - MARGINS2.top - MARGINS2.bottom,
-					// xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(data, function(d) {
-					// 		return d.Year;
-					// }), d3.max(data, function(d) {
-					// 	return d.Year;
-					// })]),
-					// yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, d3.max(data, function(d) {
-					//     return d.Fertility_Rate;
-					// })]),
-					// xAxis = d3.svg.axis()
-	    // 				.scale(xScale),
-					// yAxis = d3.svg.axis()
-	    // 				.scale(yScale)
-	    // 				.orient("left"),
-					xScale = d3.scaleTime().range([0, WIDTH]),
-					xScale2 = d3.scaleTime().range([0, WIDTH]),
-					yScale = d3.scaleLinear().range([HEIGHT, 0]),
-					yScale2 = d3.scaleLinear().range([HEIGHT2, 0]),
-					xAxis = d3.axisBottom(xScale),
-					xAxis2 = d3.axisBottom(xScale2),
-					yAxis = d3.axisLeft(yScale);
-	    			//lSpace = WIDTH/dataGroup.length,
-
-				var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-				var brush = d3.brushX()
-				    .extent([[0, 0], [WIDTH, HEIGHT2]])
-				    .on("brush end", brushed);
-
-				var zoom = d3.zoom()
-				    .scaleExtent([1, Infinity])
-				    .translateExtent([[0, 0], [WIDTH, HEIGHT]])
-				    .extent([[0, 0], [WIDTH, HEIGHT]])
-				    .on("zoom", zoomed);
-				
-				var lineGen = d3.line()
-					.x(function(d) {
-					return xScale(d.Year);
-					})
-					.y(function(d) {
-					return yScale(d.Fertility_Rate);
-					});
-
-				var lineGen2 = d3.line()
-					.x(function(d) {
-					return xScale2(d.Year);
-					})
-					.y(function(d) {
-					return yScale2(d.Fertility_Rate);
-					});
-
-				vis.append("defs").append("clipPath")
-				    .attr("id", "clip")
-				  .append("rect")
-				    .attr("width", WIDTH)
-				    .attr("height", HEIGHT);
-
-				var focus = vis.append("g")
-				    .attr("class", "focus")
-				    .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")");
-
-				var context = vis.append("g")
-				    .attr("class", "context")
-				    .attr("transform", "translate(" + MARGINS2.left + "," + MARGINS2.top + ")");
-
-				// vis.append("svg:g")
-				//     .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
-				//     .call(xAxis);
-
-				// vis.append("svg:g")
-				// 	.attr("transform", "translate(" + (MARGINS.left) + ",0)")
-				//     .call(yAxis);
-
-				// var lineGen = d3.svg.line()
-				// 	.x(function(d) {
-				// 	return xScale(d.Year);
-				// 	})
-				// 	.y(function(d) {
-				// 	return yScale(d.Fertility_Rate);
-				// 	});
-
-					xScale.domain([d3.min(data, function(d) {
-							return d.Year;
-					}), d3.max(data, function(d) {
-							return d.Year;
-					})])
-					yScale.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; })]);
-					xScale2.domain(xScale.domain());
-					yScale2.domain(yScale.domain());
-
-
+				// For each Country Name draw a line graph
 				dataGroup.forEach(function(d, i) {
-
-					// focus.append('svg:path')
-					//     .attr('d', lineGen(d.values))
-					//     .attr('stroke', function(d, j) {
-				 //            return "hsl(" + Math.random() * 360 + ",100%,50%)";
-				 //        })
-					//     .attr('stroke-width', 2)
-					//     .attr('fill', 'none')
-
-					// focus.append('svg:path')
-					//     .attr('d', lineGen2(d.values))
-					//     .attr('stroke', function(d, j) {
-				 //            return "hsl(" + Math.random() * 360 + ",100%,50%)";
-				 //        })
-					//     .attr('stroke-width', 2)
-					//     .attr('fill', 'none')
-
+					// Draw the line graph on focus section
 					focus.append("path")
 						.datum(d.values)
 						.attr("class", "line")
@@ -192,7 +161,7 @@
 					    .attr('fill', 'none')
 					    .attr('clip-path', 'url(#clip)')
 						.attr("d", lineGen(d.values));
-
+					// Draw the line grapsh on context section
 					context.append("path")
 						.datum(d.values)
 						.attr("class", "line")
@@ -203,95 +172,59 @@
 						.attr("d", lineGen2(d.values));
 				});
 
+				// Set dimensions to SVG to be modified and zoom call
+				vis.append("rect")
+					.attr("class", "zoom")
+					.attr("width", WIDTH)
+					.attr("height", HEIGHT)
+					.attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
+					.call(zoom);
 
-					focus.append("g")
-						.attr("class", "axis axis--x")
-						.attr("transform", "translate(0," + HEIGHT + ")")
-						.call(xAxis);
+				// Set X axis to focus section
+				focus.append("g")
+					.attr("class", "axis axis--x")
+					.attr("transform", "translate(0," + HEIGHT + ")")
+					.call(xAxis);
 
-					focus.append("g")
-						.attr("class", "axis axis--y")
-						.call(yAxis);
+				// Set Y axis to focus section
+				focus.append("g")
+					.attr("class", "axis axis--y")
+					.call(yAxis);
 
-					context.append("g")
-						.attr("class", "axis axis--x")
-						.attr("transform", "translate(0," + HEIGHT2 + ")")
-						.call(xAxis2);
+				// Set X axis to focus section
+				context.append("g")
+					.attr("class", "axis axis--x")
+					.attr("transform", "translate(0," + HEIGHT2 + ")")
+					.call(xAxis2);
 
-					context.append("g")
-						.attr("class", "brush")
-						.call(brush)
-						.call(brush.move, xScale.range());
-
-					vis.append("rect")
-						.attr("class", "zoom")
-						.attr("width", WIDTH)
-						.attr("height", HEIGHT)
-						.attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
-						.call(zoom);
-
-
-				function brushed() {
-					if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-					var s = d3.event.selection || xScale2.range();
-					xScale.domain(s.map(xScale2.invert, xScale2));
-					focus.selectAll(".line").attr("d", lineGen);
-					focus.select(".axis--x").call(xAxis);
-					vis.select(".zoom").call(zoom.transform, d3.zoomIdentity
-					  .scale(WIDTH / (s[1] - s[0]))
-					  .translate(-s[0], 0));
-				}
-
-				function zoomed() {
-					if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-					var t = d3.event.transform;
-					xScale.domain(t.rescaleX(xScale2).domain());
-					focus.selectAll(".line").attr("d", lineGen);
-					focus.select(".axis--x").call(xAxis);
-					context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t));
-				}
-
-				// dataGroup.forEach(function(d, i) {
-				// 	vis.append('svg:path')
-				// 	    .attr('d', lineGen(d.values))
-				// 	    .attr('stroke', function(d, j) {
-				//             return "hsl(" + Math.random() * 360 + ",100%,50%)";
-				//         })
-				// 	    .attr('stroke-width', 2)
-				// 	    .attr('fill', 'none')
-				// 	    .attr('id', 'line_'+d.key);
-				// 	vis.append("text")
-				// 	    .attr("x", (lSpace / 2) + i * lSpace)
-				// 	    .attr("y", HEIGHT)
-				// 	    .style("fill", "black")
-				// 	    .text(d.key)
-				// 		.on('click', function() {
-				// 		    var active = d.active ? false : true;
-				// 		    var opacity = active ? 0 : 1;
-						 
-				// 		    d3.select("#line_" + d.key).style("opacity", opacity);
-						 
-				// 		    d.active = active;
-				// 		});
-				// });
-
+				// Set brush call for context bar
+				context.append("g")
+					.attr("class", "brush")
+					.call(brush)
+					.call(brush.move, xScale.range());
 			});
 
-			// data = d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {
-			// 	data.forEach(function(d) {
-			// 		d.population = +d.population;
-			// 		d["land area"] = +d["land area"];
-			// 	});
+			// Refresh ranges and line graphs on focus section for brushing action
+			function brushed() {
+				if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+				var s = d3.event.selection || xScale2.range();
+				xScale.domain(s.map(xScale2.invert, xScale2));
+				focus.selectAll(".line").attr("d", lineGen);
+				focus.select(".axis--x").call(xAxis);
+				vis.select(".zoom").call(zoom.transform, d3.zoomIdentity
+				  .scale(WIDTH / (s[1] - s[0]))
+				  .translate(-s[0], 0));
+			}
 
-			// 	d3.select(".chart")
-			// 		.selectAll("rect")
-			// 		.data(data)
-			// 		.enter().append("rect")
-			// 		.attr("width",19)
-			// 		.attr("height", function(d) { return d.population/10000 })
-			// 		.attr("x", function(d,i) { return 20*i })
-			// 		.attr("y", function(d) { return 420 - d.population/10000 });
-			// });
+			// Refresh ranges and line graphs on focus section for zooming action
+			function zoomed() {
+				if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+				var t = d3.event.transform;
+				xScale.domain(t.rescaleX(xScale2).domain());
+				focus.selectAll(".line").attr("d", lineGen);
+				focus.select(".axis--x").call(xAxis);
+				context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t));
+			}
 
 		</script>
 	</body>
