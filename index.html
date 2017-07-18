@@ -22,7 +22,7 @@
 				<div class="slide">
 					Total fertility rate has changed over time... But how? Explore it by yourself
 				</div>
-				<div class="slide">
+				<div class="slide byCountryFertilityRateSlide">
 						<svg id="byCountryFertilityRate" width="1000" height="500"></svg>
 				</div>
 			</div>
@@ -51,6 +51,10 @@
 
 			// ******** Variable definition *********	
 			
+			var div = d3.select(".byCountryFertilityRateSlide").append("div")
+				.attr("class", "tooltip")
+				.style("opacity", 0);
+
 			// Parse time for yearly data		
 			var parseDate = d3.timeParse("%Y");
 
@@ -164,30 +168,29 @@
 
 				// For each Country Name draw a line graph
 				dataGroup.forEach(function(d, i) {
-					//console.log(d.values)
 					// add the dots with tooltips
 					points.selectAll("dot")
 						.data(d.values)
 						.enter().append("circle")
 						.attr("r", 5)
-						.attr("cx", function(v) { console.log(xScale(v.Year)); return xScale(v.Year); })
+						.attr("cx", function(v) { return xScale(v.Year); })
 						.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 						.attr("class", "line")
 						.attr('id', 'line_'+d.values[0].Region)
-						.attr('clip-path', 'url(#clip)');
-						// .on("mouseover", function(d) {
-						// div.transition()
-						// .duration(200)
-						// .style("opacity", .9);
-						// div.html(formatTime(d.date) + "<br/>" + d.close)
-						// .style("left", (d3.event.pageX) + "px")
-						// .style("top", (d3.event.pageY - 28) + "px");
-						// })
-						// .on("mouseout", function(d) {
-						// div.transition()
-						// .duration(500)
-						// .style("opacity", 0);
-						// });
+						.attr('clip-path', 'url(#clip)')
+						.on("mouseover", function(v) {
+							div.transition()
+								.duration(200)
+								.style("opacity", .9);
+							div.html(v.Year + "<br/>" + v.Fertility_Rate)
+								.style("left", (d3.event.pageX) + "px")
+								.style("top", (d3.event.pageY - 28) + "px");
+						})
+						.on("mouseout", function(v) {
+							div.transition()
+							.duration(500)
+							.style("opacity", 0);
+						});
 					// Draw the line graph on focus section
 					focus.append("path")
 						.datum(d.values)
@@ -269,7 +272,7 @@
 				xScale.domain(s.map(xScale2.invert, xScale2));
 				focus.selectAll(".line").attr("d", lineGen);
 				points.selectAll(".line")
-					.attr("cx", function(v) { console.log(xScale(v.Year)); return xScale(v.Year); })
+					.attr("cx", function(v) { return xScale(v.Year); })
 					.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 				focus.select(".axis--x").call(xAxis);
 				vis.select(".zoom").call(zoom.transform, d3.zoomIdentity
@@ -284,7 +287,7 @@
 				xScale.domain(t.rescaleX(xScale2).domain());
 				focus.selectAll(".line").attr("d", lineGen);
 				points.selectAll(".line")
-					.attr("cx", function(v) { console.log(xScale(v.Year)); return xScale(v.Year); })
+					.attr("cx", function(v) { return xScale(v.Year); })
 					.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 				focus.select(".axis--x").call(xAxis);
 				context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t));
