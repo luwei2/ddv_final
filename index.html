@@ -142,7 +142,7 @@
 
 				// Set domain for ranges dynamically based on data
 				xScale.domain([d3.min(data, function(d) { return d.Year; }), d3.max(data, function(d) { return d.Year; })])
-				yScale.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; })]);
+				yScale.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; }) + 1]);
 				xScale2.domain(xScale.domain());
 				yScale2.domain(yScale.domain());
 
@@ -152,7 +152,7 @@
 					points.selectAll("dot")
 						.data(d.values)
 						.enter().append("circle")
-						.attr("r", 5)
+						.attr("r", 2.5)
 						.attr("cx", function(v) { return xScale(v.Year); })
 						.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 						.attr("class", "line")
@@ -175,7 +175,7 @@
 					focus.append("path")
 						.datum(d.values)
 						.attr("class", "line")
-					    .attr('stroke-width', 2)
+					    .attr('stroke-width', 1)
 					    .attr('fill', 'none')
 					    // Set ID with region to each line to easily filter
 					    .attr('id', 'line_'+d.values[0].Region)
@@ -185,7 +185,7 @@
 					context.append("path")
 						.datum(d.values)
 						.attr("class", "line")
-						.attr('stroke-width', 2)
+						.attr('stroke-width', 1)
 					    .attr('fill', 'none')
 					    // Set ID with region to each line to easily filter
 					    .attr('id', 'line_'+d.values[0].Region)
@@ -204,7 +204,7 @@
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
-							var radius = active ? 0 : 5;
+							var radius = active ? 0 : 2.5;
 							d3.selectAll("#line_"+d.values[0].Region).style("opacity", opacity);
 							d3.selectAll("#point_"+d.values[0].Region).attr("r", radius);
 							d.active = active;
