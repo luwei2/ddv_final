@@ -100,6 +100,11 @@
 			    .attr("class", "context")
 			    .attr("transform", "translate(" + MARGINS2.left + "," + MARGINS2.top + ")");
 
+			// Append class context that will be used to draw the points in the focus bar
+			var points = vis.append("g")
+			    .attr("class", "points")
+			    .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")");
+
 			// Line definition for focus section
 			var lineGen = d3.line()
 				.x(function(d) {
@@ -159,6 +164,30 @@
 
 				// For each Country Name draw a line graph
 				dataGroup.forEach(function(d, i) {
+					//console.log(d.values)
+					// add the dots with tooltips
+					points.selectAll("dot")
+						.data(d.values)
+						.enter().append("circle")
+						.attr("r", 5)
+						.attr("cx", function(v) { console.log(xScale(v.Year)); return xScale(v.Year); })
+						.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
+						.attr("class", "line")
+						.attr('id', 'line_'+d.values[0].Region)
+						.attr('clip-path', 'url(#clip)');
+						// .on("mouseover", function(d) {
+						// div.transition()
+						// .duration(200)
+						// .style("opacity", .9);
+						// div.html(formatTime(d.date) + "<br/>" + d.close)
+						// .style("left", (d3.event.pageX) + "px")
+						// .style("top", (d3.event.pageY - 28) + "px");
+						// })
+						// .on("mouseout", function(d) {
+						// div.transition()
+						// .duration(500)
+						// .style("opacity", 0);
+						// });
 					// Draw the line graph on focus section
 					focus.append("path")
 						.datum(d.values)
@@ -198,6 +227,7 @@
 					// Set line color by region
 					focus.selectAll("#line_"+d.values[0].Region).attr('stroke', color(i));
 					context.selectAll("#line_"+d.values[0].Region).attr('stroke', color(i));
+					points.selectAll("#line_"+d.values[0].Region).attr('fill', color(i));
 				});
 
 				// Set dimensions to SVG to be modified and zoom call
@@ -238,6 +268,9 @@
 				var s = d3.event.selection || xScale2.range();
 				xScale.domain(s.map(xScale2.invert, xScale2));
 				focus.selectAll(".line").attr("d", lineGen);
+				points.selectAll(".line")
+					.attr("cx", function(v) { console.log(xScale(v.Year)); return xScale(v.Year); })
+					.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 				focus.select(".axis--x").call(xAxis);
 				vis.select(".zoom").call(zoom.transform, d3.zoomIdentity
 				  .scale(WIDTH / (s[1] - s[0]))
@@ -250,6 +283,9 @@
 				var t = d3.event.transform;
 				xScale.domain(t.rescaleX(xScale2).domain());
 				focus.selectAll(".line").attr("d", lineGen);
+				points.selectAll(".line")
+					.attr("cx", function(v) { console.log(xScale(v.Year)); return xScale(v.Year); })
+					.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 				focus.select(".axis--x").call(xAxis);
 				context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t));
 			}
