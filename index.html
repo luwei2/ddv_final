@@ -51,12 +51,13 @@
 
 			// ******** Variable definition *********	
 			
-			var div = d3.select(".byCountryFertilityRateSlide").append("div")
+			var div = d3.select("body").append("div")
 				.attr("class", "tooltip")
 				.style("opacity", 0);
 
 			// Parse time for yearly data		
 			var parseDate = d3.timeParse("%Y");
+			var formatTime = d3.timeFormat("%Y");
 
 			// SVG to be modified selection
 			var vis = d3.select("#byCountryFertilityRate");
@@ -86,13 +87,6 @@
 			var brush = d3.brushX()
 			    .extent([[0, 0], [WIDTH, HEIGHT2]])
 			    .on("brush end", brushed);
-
-			// Define zoom call
-			var zoom = d3.zoom()
-			    .scaleExtent([1, Infinity])
-			    .translateExtent([[0, 0], [WIDTH, HEIGHT]])
-			    .extent([[0, 0], [WIDTH, HEIGHT]])
-			    .on("zoom", zoomed);
 
 			// Append class focus that will be used to draw the charts
 			var focus = vis.append("g")
@@ -176,13 +170,13 @@
 						.attr("cx", function(v) { return xScale(v.Year); })
 						.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 						.attr("class", "line")
-						.attr('id', 'line_'+d.values[0].Region)
+						.attr('id', 'point_'+d.values[0].Region)
 						.attr('clip-path', 'url(#clip)')
 						.on("mouseover", function(v) {
 							div.transition()
 								.duration(200)
 								.style("opacity", .9);
-							div.html(v.Year + "<br/>" + v.Fertility_Rate)
+							div.html("Year: " + formatTime(v.Year) + "<br/>FR:" + v.Fertility_Rate + "<br/>Country:" + v.Country_Name)
 								.style("left", (d3.event.pageX) + "px")
 								.style("top", (d3.event.pageY - 28) + "px");
 						})
@@ -224,22 +218,16 @@
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
+							var radius = active ? 0 : 5;
 							d3.selectAll("#line_"+d.values[0].Region).style("opacity", opacity);
+							d3.selectAll("#point_"+d.values[0].Region).attr("r", radius);
 							d.active = active;
 						});
 					// Set line color by region
 					focus.selectAll("#line_"+d.values[0].Region).attr('stroke', color(i));
 					context.selectAll("#line_"+d.values[0].Region).attr('stroke', color(i));
-					points.selectAll("#line_"+d.values[0].Region).attr('fill', color(i));
+					points.selectAll("#point_"+d.values[0].Region).attr('fill', color(i));
 				});
-
-				// Set dimensions to SVG to be modified and zoom call
-				vis.append("rect")
-					.attr("class", "zoom")
-					.attr("width", WIDTH)
-					.attr("height", HEIGHT)
-					.attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
-					.call(zoom);
 
 				// Set X axis to focus section
 				focus.append("g")
@@ -267,7 +255,6 @@
 
 			// Refresh ranges and line graphs on focus section for brushing action
 			function brushed() {
-				if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
 				var s = d3.event.selection || xScale2.range();
 				xScale.domain(s.map(xScale2.invert, xScale2));
 				focus.selectAll(".line").attr("d", lineGen);
@@ -275,24 +262,7 @@
 					.attr("cx", function(v) { return xScale(v.Year); })
 					.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 				focus.select(".axis--x").call(xAxis);
-				vis.select(".zoom").call(zoom.transform, d3.zoomIdentity
-				  .scale(WIDTH / (s[1] - s[0]))
-				  .translate(-s[0], 0));
 			}
-
-			// Refresh ranges and line graphs on focus section for zooming action
-			function zoomed() {
-				if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-				var t = d3.event.transform;
-				xScale.domain(t.rescaleX(xScale2).domain());
-				focus.selectAll(".line").attr("d", lineGen);
-				points.selectAll(".line")
-					.attr("cx", function(v) { return xScale(v.Year); })
-					.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
-				focus.select(".axis--x").call(xAxis);
-				context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t));
-			}
-
 		</script>
 	</body>
 </html>
