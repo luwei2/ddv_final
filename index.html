@@ -23,7 +23,7 @@
 					Total fertility rate has changed over time... But how? Explore it by yourself
 				</div>
 				<div class="slide byCountryFertilityRateSlide">
-						<svg id="byCountryFertilityRate" width="1000" height="500"></svg>
+					<svg id="byCountryFertilityRate" width="1000" height="500"></svg>
 				</div>
 			</div>
 			<div class="section">
@@ -63,8 +63,8 @@
 			var vis = d3.select("#byCountryFertilityRate");
 
 			// Dimensions
-			var	MARGINS = { top: 20, right: 20, bottom: 110, left: 160 },
-				MARGINS2 = { top: 430, right: 20, bottom: 30, left: 160 },
+			var	MARGINS = { top: 20, right: 200, bottom: 130, left: 50 },
+				MARGINS2 = { top: 410, right: 200, bottom: 50, left: 50 },
 				WIDTH = +vis.attr("width") - MARGINS.left - MARGINS.right,
 				HEIGHT = +vis.attr("height") - MARGINS.top - MARGINS.bottom,
 				HEIGHT2 = +vis.attr("height") - MARGINS2.top - MARGINS2.bottom;
@@ -125,10 +125,10 @@
 
 			// clipPath for context bar
 			vis.append("defs").append("clipPath")
-			    .attr("id", "clip")
-			  .append("rect")
-			    .attr("width", WIDTH)
-			    .attr("height", HEIGHT);
+				.attr("id", "clip")
+				.append("rect")
+				.attr("width", WIDTH)
+				.attr("height", HEIGHT);
 
 			// ******** Multi-line graph creation *********
 
@@ -211,8 +211,8 @@
 				dataRegion.forEach(function(d, i) {
 					// Create legend for each region
 					vis.append("text")
-						.attr("x", 15)
-						.attr("y", 10 + i * 15)
+						.attr("x", WIDTH + MARGINS.left + 15)
+						.attr("y", HEIGHT/2 + i * 20)
 						.style("fill", "black")
 						.text(d.key)
 						.on('click', function() {
@@ -251,6 +251,18 @@
 					.attr("class", "brush")
 					.call(brush)
 					.call(brush.move, xScale.range());
+
+				// X Axis label
+				context.append("text")
+					.attr("transform", "translate(" + (WIDTH/2) + "," + (HEIGHT2 + 40) + ")")
+					.style("text-anchor", "middle")
+					.text("Year");
+
+				// Y Axis label
+				vis.append("text")
+					.attr("transform", "rotate(-90), translate(" + (-1 * HEIGHT / 2 ) + ", 20)")
+					.style("text-anchor", "middle")
+					.text("Total Fertility Rate");    
 			});
 
 			// Refresh ranges and line graphs on focus section for brushing action
