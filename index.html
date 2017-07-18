@@ -163,9 +163,9 @@
 					focus.append("path")
 						.datum(d.values)
 						.attr("class", "line")
-						.attr('stroke', color(i))
 					    .attr('stroke-width', 2)
 					    .attr('fill', 'none')
+					    // Set ID with region to each line to easily filter
 					    .attr('id', 'line_'+d.values[0].Region)
 					    .attr('clip-path', 'url(#clip)')
 						.attr("d", lineGen(d.values));
@@ -173,15 +173,17 @@
 					context.append("path")
 						.datum(d.values)
 						.attr("class", "line")
-						.attr('stroke', color(i))
 						.attr('stroke-width', 2)
 					    .attr('fill', 'none')
+					    // Set ID with region to each line to easily filter
+					    .attr('id', 'line_'+d.values[0].Region)
 					    .attr('clip-path', 'url(#clip)')
 						.attr("d", lineGen2(d.values));
 				});
 
 				// For each Region add a legend
 				dataRegion.forEach(function(d, i) {
+					// Create legend for each region
 					vis.append("text")
 						.attr("x", 15)
 						.attr("y", 10 + i * 15)
@@ -193,6 +195,9 @@
 							d3.selectAll("#line_"+d.values[0].Region).style("opacity", opacity);
 							d.active = active;
 						});
+					// Set line color by region
+					focus.selectAll("#line_"+d.values[0].Region).attr('stroke', color(i));
+					context.selectAll("#line_"+d.values[0].Region).attr('stroke', color(i));
 				});
 
 				// Set dimensions to SVG to be modified and zoom call
