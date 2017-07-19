@@ -16,7 +16,9 @@
 			<div class="section">
 				<svg id="byCountryFertilityRate" width="1000" height="500"></svg>
 			</div>
-			<div class="section">Section 3</div>
+			<div class="section">
+				<svg id="FertilityRateVsGDP" width="1000" height="500"></svg>
+			</div>
 			<div class="section">Section 4</div>
 		</div>
 		<div id="footer">About this visualization</div>
@@ -133,7 +135,7 @@
 				    })
 				    .entries(data);
 
-				// Nest data based on Country Name
+				// Nest data based on Region
 				var dataRegion = d3.nest()
 				    .key(function(d) {
 				        return d.Region;
@@ -261,6 +263,199 @@
 					.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 				focus.select(".axis--x").call(xAxis);
 			}
+
+			// ***************************************************
+			// ******* FERTILITY RATE VS GDP PER CAPITA **********
+			// ***************************************************
+
+			// ******** Variable definition *********	
+
+			var div_2 = d3.select("body").append("div")
+				.attr("class", "tooltip")
+				.style("opacity", 0);
+
+			// SVG to be modified selection
+			var vis_2 = d3.select("#FertilityRateVsGDP");
+
+			// Dimensions
+			var	MARGINS_2 = { top: 20, right: 200, bottom: 130, left: 50 },
+				MARGINS2_2 = { top: 410, right: 200, bottom: 50, left: 50 },
+				WIDTH_2 = +vis.attr("width") - MARGINS_2.left - MARGINS_2.right,
+				HEIGHT_2 = +vis.attr("height") - MARGINS_2.top - MARGINS_2.bottom,
+				HEIGHT2_2 = +vis.attr("height") - MARGINS2_2.top - MARGINS2_2.bottom;
+
+			// Scales
+			var xScale_2 = d3.scaleLinear().range([0, WIDTH_2]),
+				xScale2_2 = d3.scaleLinear().range([0, WIDTH_2]),
+				yScale_2 = d3.scaleLinear().range([HEIGHT_2, 0]),
+				yScale2_2 = d3.scaleLinear().range([HEIGHT2_2, 0]);
+
+			// Axis
+			var	xAxis_2 = d3.axisBottom(xScale_2),
+				xAxis2_2 = d3.axisBottom(xScale2_2),
+				yAxis_2 = d3.axisLeft(yScale_2);
+
+			// Line color
+			var color_2 = d3.scaleOrdinal(d3.schemeCategory10);
+
+			// Define brush call
+			var brush_2 = d3.brushX()
+			    .extent([[0, 0], [WIDTH_2, HEIGHT2_2]])
+			    .on("brush end", brushed_2);
+
+			// Append class context that will be used to draw the charts in the context bar
+			var context_2 = vis_2.append("g")
+			    .attr("class", "context_2")
+			    .attr("transform", "translate(" + MARGINS2_2.left + "," + MARGINS2_2.top + ")");
+
+			// Append class context that will be used to draw the points in the focus bar
+			var points_2 = vis_2.append("g")
+			    .attr("class", "points_2")
+			    .attr("transform", "translate(" + MARGINS_2.left + "," + MARGINS_2.top + ")");
+
+			// ******** Append section *********	
+
+			// clipPath for context bar
+			vis_2.append("defs").append("clipPath")
+				.attr("id", "clip_2")
+				.append("rect")
+				.attr("width", WIDTH_2)
+				.attr("height", HEIGHT_2);
+
+			// ******** Scatter plot graph creation *********
+
+			// Source of information
+			d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {	
+				// Parse Year and convert Fertility Rate into number
+				data.forEach(function(d) {
+					d.Fertility_Rate = +d.Fertility_Rate;
+					//d.Year = parseDate(d.Year);
+					d.GDP_Per_Capita = +d.GDP_Per_Capita
+				});
+
+				// Nest data based on Year
+				var dataGroup_2 = d3.nest()
+				    .key(function(d) {
+				        return d.Year;
+				    })
+				    .entries(data);
+
+				// Nest data based on Region
+				var dataRegion_2 = d3.nest()
+				    .key(function(d) {
+				        return d.Region;
+				    })
+				    .entries(data);
+
+				// Set domain for ranges dynamically based on data
+				xScale_2.domain([d3.min(data, function(d) { return d.GDP_Per_Capita; }) - 100, d3.max(data, function(d) { return d.GDP_Per_Capita; }) + 100])
+				yScale_2.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; }) + 1]);
+				xScale2_2.domain(xScale_2.domain());
+				yScale2_2.domain(yScale_2.domain());
+
+				// For each Country Name draw a line graph
+				dataGroup_2.forEach(function(d, i) {
+					// Add the dots with tooltips
+					points_2.selectAll("dot")
+						.data(d.values)
+						.enter().append("circle")
+						.attr("r", 2.5)
+						.attr("cx", function(v) { return xScale_2(v.GDP_Per_Capita); })
+						.attr("cy", function(v) { return yScale_2(v.Fertility_Rate); })
+						.attr("class", "line_2")
+						.attr('id', function(v) { return 'point_2_'+v.Region; } )
+						.attr('clip-path', 'url(#clip_2)')
+						.on("mouseover", function(v) {
+							div_2.transition()
+								.duration(200)
+								.style("opacity", .9);
+							div_2.html("Year: " + v.Year + "<br/>FR:" + v.Fertility_Rate + "<br/>Country:" + v.Country_Name + "<br/>GDP:" + v.GDP_Per_Capita)
+								.style("left", (d3.event.pageX) + "px")
+								.style("top", (d3.event.pageY - 28) + "px");
+						})
+						.on("mouseout", function(v) {
+							div_2.transition()
+							.duration(500)
+							.style("opacity", 0);
+						});
+					// Draw the scatter graph on context section
+					context_2.selectAll("dot")
+						.data(d.values)
+						.enter().append("circle")
+						.attr("r", 2.5)
+						.attr("cx", function(v) { return xScale2_2(v.GDP_Per_Capita); })
+						.attr("cy", function(v) { return yScale2_2(v.Fertility_Rate); })
+						.attr("class", "line_2")
+						.attr('id', function(v) { return 'point_2_'+v.Region } )
+						.attr('clip-path', 'url(#clip_2)');
+				});
+
+				// For each Region add a legend
+				dataRegion_2.forEach(function(d, i) {
+					// Create legend for each region
+					vis_2.append("text")
+						.attr("x", WIDTH_2 + MARGINS_2.left + 15)
+						.attr("y", HEIGHT_2/2 + i * 20)
+						.style("fill", "black")
+						.text(d.key)
+						.on('click', function() {
+							var active = d.active ? false : true;
+							var opacity = active ? 0 : 1;
+							var radius = active ? 0 : 2.5;
+							d3.selectAll("#point_2_"+d.values[0].Region).attr("r", radius);
+							d.active = active;
+						});
+					// Set line color by region
+					context_2.selectAll("#point_2_"+d.values[0].Region).attr('fill', color_2(i));
+					points_2.selectAll("#point_2_"+d.values[0].Region).attr('fill', color_2(i));
+				});
+
+				// Set X axis to focus section
+				points_2.append("g")
+					.attr("class", "axis axis--x")
+					.attr("transform", "translate(0," + HEIGHT + ")")
+					.call(xAxis_2);
+
+				// Set Y axis to focus section
+				points_2.append("g")
+					.attr("class", "axis axis--y")
+					.call(yAxis_2);
+
+				// Set X axis to focus section
+				context_2.append("g")
+					.attr("class", "axis axis--x")
+					.attr("transform", "translate(0," + HEIGHT2 + ")")
+					.call(xAxis2_2);
+
+				// Set brush call for context bar
+				context_2.append("g")
+					.attr("class", "brush_2")
+					.call(brush_2)
+					.call(brush_2.move, xScale_2.range());
+
+				// X Axis label
+				context_2.append("text")
+					.attr("transform", "translate(" + (WIDTH_2/2) + "," + (HEIGHT2_2 + 40) + ")")
+					.style("text-anchor", "middle")
+					.text("GDP Per Capita");
+
+				// Y Axis label
+				vis_2.append("text")
+					.attr("transform", "rotate(-90), translate(" + (-1 * HEIGHT_2 / 2 ) + ", 20)")
+					.style("text-anchor", "middle")
+					.text("Total Fertility Rate");    
+			});
+
+			// Refresh ranges and line graphs on focus section for brushing action
+			function brushed_2() {
+				var s = d3.event.selection || xScale2_2.range();
+				xScale_2.domain(s.map(xScale2_2.invert, xScale2_2));
+				points_2.selectAll(".line_2")
+					.attr("cx", function(v) { return xScale_2(v.GDP_Per_Capita); })
+					.attr("cy", function(v) { return yScale_2(v.Fertility_Rate); })
+				points_2.select(".axis--x").call(xAxis_2);
+			}
+
 		</script>
 	</body>
 </html>
