@@ -525,8 +525,11 @@
 				    .entries(data);
 
 				// Set domain for ranges dynamically based on data
-				xScale_3.domain([d3.min(data, function(d) { return d.GDP_Per_Capita; }) - 100, d3.max(data, function(d) { return d.GDP_Per_Capita; }) + 100])
+				xScale_3.domain([d3.min(data, function(d) { return d.GDP_Per_Capita; }) - 100, d3.max(data, function(d) { return d.GDP_Per_Capita; }) + 200])
 				yScale_3.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; }) + 1]);
+
+				// Max GDP value to calculate radius
+				var maxGDP = d3.max(data, function(d) { return d.GDP_Per_Capita; });
 
 				// For each Country Name draw a line graph
 				dataGroup_3.forEach(function(d, i) {
@@ -534,7 +537,7 @@
 					points_3.selectAll("dot")
 						.data(d.values)
 						.enter().append("circle")
-						.attr("r", 2.5)
+						.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; })
 						.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
 						.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); })
 						.attr("class", "line_3")
@@ -566,8 +569,7 @@
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
-							var radius = active ? 0 : 2.5;
-							d3.selectAll("#point_3_"+d.values[0].Region).attr("r", radius);
+							var radius = active ? d3.selectAll("#point_3_"+d.values[0].Region).attr("r", 0) : d3.selectAll("#point_3_"+d.values[0].Region).attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; });
 							d.active = active;
 						});
 					// Set line color by region
@@ -596,7 +598,7 @@
 					.attr("transform", "rotate(-90), translate(" + (-1 * HEIGHT_3 / 2 ) + ", 20)")
 					.style("text-anchor", "middle")
 					.text("Total Fertility Rate");    
-			});
+			});		
 		</script>
 	</body>
 </html>
