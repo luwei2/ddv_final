@@ -20,6 +20,9 @@
 				<svg id="FertilityRateVsGDP" width="1000" height="500"></svg>
 			</div>
 			<div class="section">
+				<input id="slider" type="range" min="1960" max="2011" value="2000" step="1" />
+				<span id="range">2000</span>
+				<button name="play" id="play">Play</button>
 				<svg id="FertilityRateVsGDPAnimated" width="1000" height="500"></svg>
 			</div>
 		</div>
@@ -533,29 +536,31 @@
 
 				// For each Country Name draw a line graph
 				dataGroup_3.forEach(function(d, i) {
-					// Add the dots with tooltips
-					points_3.selectAll("dot")
-						.data(d.values)
-						.enter().append("circle")
-						.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; })
-						.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
-						.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); })
-						.attr("class", "line_3")
-						.attr('id', function(v) { return 'point_3_'+v.Region; } )
-						.attr('clip-path', 'url(#clip_3)')
-						.on("mouseover", function(v) {
-							div_3.transition()
-								.duration(200)
-								.style("opacity", .9);
-							div_3.html("Year: " + v.Year + "<br/>FR:" + v.Fertility_Rate + "<br/>Country:" + v.Country_Name + "<br/>GDP:" + v.GDP_Per_Capita)
-								.style("left", (d3.event.pageX) + "px")
-								.style("top", (d3.event.pageY - 28) + "px");
-						})
-						.on("mouseout", function(v) {
-							div_3.transition()
-							.duration(500)
-							.style("opacity", 0);
-						});
+					if(d.key==2000) {
+						// Add the dots with tooltips
+						points_3.selectAll("dot")
+							.data(d.values)
+							.enter().append("circle")
+							.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; })
+							.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
+							.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); })
+							.attr("class", "line_3")
+							.attr('id', function(v) { return 'point_3_'+v.Region; } )
+							.attr('clip-path', 'url(#clip_3)')
+							.on("mouseover", function(v) {
+								div_3.transition()
+									.duration(200)
+									.style("opacity", .9);
+								div_3.html("Year: " + v.Year + "<br/>FR:" + v.Fertility_Rate + "<br/>Country:" + v.Country_Name + "<br/>GDP:" + v.GDP_Per_Capita)
+									.style("left", (d3.event.pageX) + "px")
+									.style("top", (d3.event.pageY - 28) + "px");
+							})
+							.on("mouseout", function(v) {
+								div_3.transition()
+								.duration(500)
+								.style("opacity", 0);
+							});
+					}
 				});
 
 				// For each Region add a legend
