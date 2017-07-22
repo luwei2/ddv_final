@@ -546,8 +546,9 @@
 							.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; })
 							.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
 							.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); })
-							.attr("class", "line_3")
+							.classed("line_3", true)
 							.attr('id', function(v) { return 'point_3_'+v.Region; } )
+							.classed("activePoint", true)
 							.attr('clip-path', 'url(#clip_3)')
 							.on("mouseover", function(v) {
 								div_3.transition()
@@ -575,8 +576,8 @@
 						.text(d.key)
 						.on('click', function() {
 							var active = d.active ? false : true;
-							var opacity = active ? 0 : 1;
-							var radius = active ? d3.selectAll("#point_3_"+d.values[0].Region).attr("r", 0) : d3.selectAll("#point_3_"+d.values[0].Region).attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; });
+							var opacity = active ? 0 : 1;			
+							var radius = active ? d3.selectAll("#point_3_"+d.values[0].Region).attr("r", 0).classed("activePoint", false) : d3.selectAll("#point_3_"+d.values[0].Region).attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; }).classed("activePoint", true);
 							d.active = active;
 						});
 					// Set line color by region
@@ -619,9 +620,11 @@
 						if(d.key==$("#slider").val()) {
 							points_3.selectAll(".line_3")
 								.data(d.values)
-								.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; })
 								.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
 								.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); });
+							points_3.selectAll(".activePoint")
+								.data(d.values)
+								.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; })
 						}
 					});
 				}
