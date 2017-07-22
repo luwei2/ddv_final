@@ -20,7 +20,7 @@
 				<svg id="FertilityRateVsGDP" width="1000" height="500"></svg>
 			</div>
 			<div class="section">
-				<input id="slider" type="range" min="1960" max="2011" value="2000" step="1" />
+				<input id="slider" type="range" min="1960" max="2015" value="2000" step="1" />
 				<span id="range">2000</span>
 				<button name="play" id="play">Play</button>
 				<svg id="FertilityRateVsGDPAnimated" width="1000" height="500"></svg>
@@ -491,7 +491,7 @@
 
 			// Append class context that will be used to draw the points in the focus bar
 			var points_3 = vis_3.append("g")
-			    .attr("class", "points_2")
+			    .attr("class", "points_3")
 			    .attr("transform", "translate(" + MARGINS_3.left + "," + MARGINS_3.top + ")");
 
 			// ******** Append section *********	
@@ -534,9 +534,11 @@
 				// Max GDP value to calculate radius
 				var maxGDP = d3.max(data, function(d) { return d.GDP_Per_Capita; });
 
+				var sliderValue = $("#slider").val();
+
 				// For each Country Name draw a line graph
 				dataGroup_3.forEach(function(d, i) {
-					if(d.key==2000) {
+					if(d.key==$("#slider").val()) {
 						// Add the dots with tooltips
 						points_3.selectAll("dot")
 							.data(d.values)
@@ -603,6 +605,27 @@
 					.attr("transform", "rotate(-90), translate(" + (-1 * HEIGHT_3 / 2 ) + ", 20)")
 					.style("text-anchor", "middle")
 					.text("Total Fertility Rate");    
+	
+				$("#slider").on("change", function(){
+					update();
+					$("#range").html($("#slider").val());
+					//clearInterval(timer);
+					//$("button").html("Play");
+				});
+
+				update = function() {
+					// For each Country Name draw a line graph
+					dataGroup_3.forEach(function(d, i) {
+						if(d.key==$("#slider").val()) {
+							points_3.selectAll(".line_3")
+								.data(d.values)
+								.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; })
+								.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
+								.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); });
+						}
+					});
+				}
+
 			});		
 		</script>
 	</body>
