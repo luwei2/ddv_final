@@ -548,7 +548,6 @@
 							.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); })
 							.classed("line_3", true)
 							.attr('id', function(v) { return 'point_3_'+v.Region; } )
-							.classed("activePoint", true)
 							.attr('clip-path', 'url(#clip_3)')
 							.on("mouseover", function(v) {
 								div_3.transition()
@@ -576,8 +575,8 @@
 						.text(d.key)
 						.on('click', function() {
 							var active = d.active ? false : true;
-							var opacity = active ? 0 : 1;			
-							var radius = active ? d3.selectAll("#point_3_"+d.values[0].Region).attr("r", 0).classed("activePoint", false) : d3.selectAll("#point_3_"+d.values[0].Region).attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; }).classed("activePoint", true);
+							var opacity = active ? d3.selectAll("#point_3_"+d.values[0].Region).attr("opacity", 0) : d3.selectAll("#point_3_"+d.values[0].Region).attr("opacity", 1);
+							var pointerEvent = active ? d3.selectAll("#point_3_"+d.values[0].Region).style("pointer-events", "none") : d3.selectAll("#point_3_"+d.values[0].Region).style("pointer-events", "auto");
 							d.active = active;
 						});
 					// Set line color by region
@@ -607,11 +606,39 @@
 					.style("text-anchor", "middle")
 					.text("Total Fertility Rate");    
 	
+				var running = false;
+				var timer;
+
+				$("button").on("click", function() {
+					var duration = 300,
+					maxstep = 2015,
+					minstep = 1960;
+					if (running == true) {
+						$("button").html("Play");
+						running = false;
+						clearInterval(timer);
+					} else if (running == false) {
+						$("button").html("Pause");
+						sliderValue = $("#slider").val();
+						timer = setInterval( function(){
+							if (sliderValue < maxstep){
+								sliderValue++;
+								$("#slider").val(sliderValue);
+								$('#range').html(sliderValue);
+							}
+							$("#slider").val(sliderValue);
+							update();
+						} , duration);
+						running = true;
+					}
+				});
+
 				$("#slider").on("change", function(){
 					update();
 					$("#range").html($("#slider").val());
-					//clearInterval(timer);
-					//$("button").html("Play");
+					clearInterval(timer);
+					$("button").html("Play");
+					running = false;
 				});
 
 				update = function() {
@@ -620,11 +647,11 @@
 						if(d.key==$("#slider").val()) {
 							points_3.selectAll(".line_3")
 								.data(d.values)
+								.transition()
+								.duration(1000)
 								.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
-								.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); });
-							points_3.selectAll(".activePoint")
-								.data(d.values)
-								.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; })
+								.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); })
+								.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; });
 						}
 					});
 				}
