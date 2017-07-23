@@ -17,13 +17,13 @@
 				<svg id="byCountryFertilityRate" width="1000" height="500"></svg>
 			</div>
 			<div class="section">
-				<svg id="FertilityRateVsGDP" width="1000" height="500"></svg>
-			</div>
-			<div class="section">
 				<input id="slider" type="range" min="1960" max="2015" value="1960" step="1" />
 				<span id="range">1960</span>
 				<button name="play" id="play">Play</button>
 				<svg id="FertilityRateVsGDPAnimated" width="1000" height="500"></svg>
+			</div>
+			<div class="section">
+				<svg id="FertilityRateVsGDP" width="1000" height="500"></svg>
 			</div>
 		</div>
 		<div id="footer">About this visualization</div>
@@ -367,7 +367,7 @@
 						.attr("cx", function(v) { return xScale_2(v.GDP_Per_Capita); })
 						.attr("cy", function(v) { return yScale_2(v.Fertility_Rate); })
 						.attr("class", "line_2")
-						.attr('id', function(v) { return 'point_2_'+v.Region; } )
+						.attr('id', function(v) { return 'point_2_'+v.Region.replace(/\s+/g, ''); } )
 						.attr('clip-path', 'url(#clip_2)')
 						.on("mouseover", function(v) {
 							div_2.transition()
@@ -390,7 +390,7 @@
 						.attr("cx", function(v) { return xScale2_2(v.GDP_Per_Capita); })
 						.attr("cy", function(v) { return yScale2_2(v.Fertility_Rate); })
 						.attr("class", "line_2")
-						.attr('id', function(v) { return 'point_2_'+v.Region } )
+						.attr('id', function(v) { return 'point_2_'+v.Region.replace(/\s+/g, '') } )
 						.attr('clip-path', 'url(#clip_2)');
 				});
 
@@ -406,12 +406,12 @@
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
 							var radius = active ? 0 : 2.5;
-							d3.selectAll("#point_2_"+d.values[0].Region).attr("r", radius);
+							d3.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
 							d.active = active;
 						});
 					// Set line color by region
-					context_2.selectAll("#point_2_"+d.values[0].Region).attr('fill', color_2(i));
-					points_2.selectAll("#point_2_"+d.values[0].Region).attr('fill', color_2(i));
+					context_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color_2(i));
+					points_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color_2(i));
 				});
 
 				// Set X axis to focus section
@@ -528,7 +528,7 @@
 				    .entries(data);
 
 				// Set domain for ranges dynamically based on data
-				xScale_3.domain([d3.min(data, function(d) { return d.GDP_Per_Capita; }) - 100, d3.max(data, function(d) { return d.GDP_Per_Capita; }) + 200])
+				xScale_3.domain([d3.min(data, function(d) { return d.GDP_Per_Capita; }) - 100, d3.max(data, function(d) { return d.GDP_Per_Capita; }) + 5000])
 				yScale_3.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; }) + 1]);
 
 				// Max GDP value to calculate radius
@@ -547,7 +547,7 @@
 								if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 									return 0;
 								} else {
-									return (v.GDP_Per_Capita * 6 / maxGDP) + 1;
+									return (v.GDP_Per_Capita * 7 / maxGDP) + 1;
 								} 
 							})
 							.attr("cx", function(v) { 
@@ -675,7 +675,7 @@
 									if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 										return 0;
 									} else {
-										return (v.GDP_Per_Capita * 6 / maxGDP) + 1;
+										return (v.GDP_Per_Capita * 7 / maxGDP) + 1;
 									} 
 								})
 								.attr("cx", function(v) { 
