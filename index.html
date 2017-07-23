@@ -166,7 +166,7 @@
 						.attr("cx", function(v) { return xScale(v.Year); })
 						.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 						.attr("class", "line")
-						.attr('id', 'point_'+d.values[0].Region.replace(/\s+/g, ''))
+						.attr('id', function(v) { return 'point_'+v.Region.replace(/\s+/g, ''); })
 						.attr('clip-path', 'url(#clip)')
 						.on("mouseover", function(v) {
 							div.transition()
