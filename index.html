@@ -539,6 +539,7 @@
 				// For each Country Name draw a line graph
 				dataGroup_3.forEach(function(d, i) {
 					if(d.key==$("#slider").val()) {
+						console.log(d);
 						// Add the dots with tooltips
 						points_3.selectAll("dot")
 							.data(d.values)
