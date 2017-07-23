@@ -544,21 +544,21 @@
 							.data(d.values)
 							.enter().append("circle")
 							.attr("r", function(v) {
-								if(v.GDP_Per_Capita == -1) {
+								if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 									return 0;
 								} else {
 									return (v.GDP_Per_Capita * 6 / maxGDP) + 1;
 								} 
 							})
 							.attr("cx", function(v) { 
-								if(v.GDP_Per_Capita == -1) {
+								if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 									return 0;
 								} else {
 									return xScale_3(v.GDP_Per_Capita);
 								}
 							})
 							.attr("cy", function(v) {
-								if(v.Fertility_Rate == -1) {
+								if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 									return 0;
 								} else {
 									return yScale_3(v.Fertility_Rate);
@@ -672,21 +672,21 @@
 								.transition()
 								.duration(1000)
 								.attr("r", function(v) {
-									if(v.GDP_Per_Capita == -1) {
+									if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 										return 0;
 									} else {
 										return (v.GDP_Per_Capita * 6 / maxGDP) + 1;
 									} 
 								})
 								.attr("cx", function(v) { 
-									if(v.GDP_Per_Capita == -1) {
+									if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 										return 0;
 									} else {
 										return xScale_3(v.GDP_Per_Capita);
 									}
 								})
 								.attr("cy", function(v) {
-									if(v.Fertility_Rate == -1) {
+									if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 										return 0;
 									} else {
 										return yScale_3(v.Fertility_Rate);
