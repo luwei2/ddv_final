@@ -625,6 +625,10 @@
 								sliderValue++;
 								$("#slider").val(sliderValue);
 								$('#range').html(sliderValue);
+							} else {
+								$("button").html("Play");
+								running = false;
+								clearInterval(timer);
 							}
 							$("#slider").val(sliderValue);
 							update();
