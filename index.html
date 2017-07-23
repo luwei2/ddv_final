@@ -576,12 +576,12 @@
 						.text(d.key)
 						.on('click', function() {
 							var active = d.active ? false : true;
-							var opacity = active ? d3.selectAll("#point_3_"+d.values[0].Region).attr("opacity", 0) : d3.selectAll("#point_3_"+d.values[0].Region).attr("opacity", 1);
-							var pointerEvent = active ? d3.selectAll("#point_3_"+d.values[0].Region).style("pointer-events", "none") : d3.selectAll("#point_3_"+d.values[0].Region).style("pointer-events", "auto");
+							var opacity = active ? d3.selectAll("#point_3_"+d.values[0].Region.replace(/\s+/g, '')).attr("opacity", 0) : d3.selectAll("#point_3_"+d.values[0].Region.replace(/\s+/g, '')).attr("opacity", 1);
+							var pointerEvent = active ? d3.selectAll("#point_3_"+d.values[0].Region.replace(/\s+/g, '')).style("pointer-events", "none") : d3.selectAll("#point_3_"+d.values[0].Region.replace(/\s+/g, '')).style("pointer-events", "auto");
 							d.active = active;
 						});
 					// Set line color by region
-					points_3.selectAll("#point_3_"+d.values[0].Region).attr('fill', color_3(i));
+					points_3.selectAll("#point_3_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color_3(i));
 				});
 
 				// Set X axis to focus section
