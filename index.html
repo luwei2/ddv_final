@@ -647,7 +647,7 @@
 								div_3.transition()
 									.duration(200)
 									.style("opacity", .9);
-								div_3.html("Year: " + v.Year + "<br/>FR:" + v.Fertility_Rate + "<br/>Country:" + v.Country_Name + "<br/>GDP:" + v.GDP_Per_Capita)
+								div_3.html("<b style='font-size:12px; color:#333333'>" + v.Country_Name + "</b><br/><b>Fertility Rate: </b>" + v.Fertility_Rate + "<br/><b>GDP Per Capita: </b>" + v.GDP_Per_Capita)
 									.style("left", (d3.event.pageX) + "px")
 									.style("top", (d3.event.pageY - 28) + "px");
 							})
@@ -934,7 +934,7 @@
 							div_4.transition()
 								.duration(200)
 								.style("opacity", .9);
-							div_4.html("Year: " + formatTime(v.Year) + "<br/>Avg. FR:" + v.Avg_Fertility_Rate + "<br/>Religin:" + v.Religion)
+							div_4.html("<b style='font-size:12px; color:#333333'>" + v.Religion + "</b><br/><b>Year: </b>" + formatTime(v.Year) + "<br/><b>Avg. Fertility Rate: </b>" + v.Avg_Fertility_Rate)
 								.style("left", (d3.event.pageX) + "px")
 								.style("top", (d3.event.pageY - 28) + "px");
 						})
