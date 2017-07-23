@@ -72,6 +72,18 @@
 				yScale = d3.scaleLinear().range([HEIGHT, 0]),
 				yScale2 = d3.scaleLinear().range([HEIGHT2, 0]);
 
+			// gridlines in x axis function
+			function make_x_gridlines() {		
+			    return d3.axisBottom(xScale)
+			        .ticks(10)
+			}
+
+			// gridlines in y axis function
+			function make_y_gridlines() {		
+			    return d3.axisLeft(yScale)
+			        .ticks(10)
+			}
+
 			// Axis
 			var	xAxis = d3.axisBottom(xScale),
 				xAxis2 = d3.axisBottom(xScale2),
@@ -295,7 +307,24 @@
 				vis.append("text")
 					.attr("transform", "rotate(-90), translate(" + (-1 * HEIGHT / 2 ) + ", 20)")
 					.style("text-anchor", "middle")
-					.text("Total Fertility Rate");    
+					.text("Total Fertility Rate"); 
+
+				// add the X gridlines
+				focus.append("g")			
+					.attr("class", "grid")
+					.attr("transform", "translate(0," + HEIGHT + ")")
+					.call(make_x_gridlines()
+						.tickSize(-HEIGHT)
+						.tickFormat("")
+					)
+
+				// add the Y gridlines
+				focus.append("g")			
+				.attr("class", "grid")
+				.call(make_y_gridlines()
+					.tickSize(-WIDTH)
+					.tickFormat("")
+				)   
 			});
 
 			// Refresh ranges and line graphs on focus section for brushing action
@@ -306,6 +335,10 @@
 				points.selectAll(".line")
 					.attr("cx", function(v) { return xScale(v.Year); })
 					.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
+				focus.select(".grid").call(make_x_gridlines()
+						.tickSize(-HEIGHT)
+						.tickFormat("")
+					);
 				focus.select(".axis--x").call(xAxis);
 			}
 
