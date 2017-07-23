@@ -6,7 +6,7 @@
 		<script src="jquery-1.11.3.js"></script>
 		<script src="jquery.fullPage.min.js"></script>
 		<link rel="stylesheet" href="jquery.fullPage.css">
-		<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Raleway|Oxigen" rel="stylesheet">
 	</head>
 	<body>
 		<div id="wrapper">
@@ -35,10 +35,10 @@
 
 			$(document).ready(function() {
 				$('#wrapper').fullpage({
-					sectionsColor: ['#f1f3f4', '#f1f3f4', '#f1f3f4', '#f1f3f4', '#f1f3f4'],
+					sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff'],
 					navigation: true,
 					navigationPosition: 'right',
-					navigationTooltips: ['Page1', 'Page2', 'Page3', 'Page4', 'Page5']
+					navigationTooltips: ['Introduction', 'FR by Country', 'FR vs GDP', 'FR vs Happiness', 'FR and Religion']
 				});
 			});
 
@@ -165,9 +165,10 @@
 							div.transition()
 								.duration(200)
 								.style("opacity", .9);
-							div.html("Year: " + formatTime(v.Year) + "<br/>FR:" + v.Fertility_Rate + "<br/>Country:" + v.Country_Name)
+							div.html("<b style='font-size:11.5px; color:#333333'>" + v.Country_Name + "</b><br/><b>Year: </b>" + formatTime(v.Year) + "<br/><b>FR: </b>" + v.Fertility_Rate)
 								.style("left", (d3.event.pageX) + "px")
 								.style("top", (d3.event.pageY - 28) + "px");
+							div.style("width", v.Country_Name.size * 2);
 						})
 						.on("mouseout", function(v) {
 							div.transition()
@@ -235,6 +236,16 @@
 						.attr("width", 10)
 						.attr("height", 10)
 						.attr('id', 'legendColor_'+d.values[0].Region.replace(/\s+/g, ''))
+						.on("mouseover", function(v) {
+							var shadow = "2px 2px 2px #808080";
+							d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 1).style("stroke", "black");
+							d3.selectAll("#legendText_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
+						.on("mouseout", function(v) {
+							var shadow = "2px 2px 2px #aaa";
+							d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 0).style("stroke", "none");
+							d3.selectAll("#legendText_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
@@ -425,6 +436,16 @@
 						.style("fill", "black")
 						.text(d.key)
 						.attr('id', 'legendText_2_'+d.values[0].Region.replace(/\s+/g, ''))
+						.on("mouseover", function(v) {
+							var shadow = "2px 2px 2px #808080";
+							d3.selectAll("#legendColor_2_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 1).style("stroke", "black");
+							d3.selectAll("#legendText_2_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
+						.on("mouseout", function(v) {
+							var shadow = "2px 2px 2px #aaa";
+							d3.selectAll("#legendColor_2_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 0).style("stroke", "none");
+							d3.selectAll("#legendText_2_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
@@ -444,6 +465,16 @@
 						.attr("width", 10)
 						.attr("height", 10)
 						.attr('id', 'legendColor_2_'+d.values[0].Region.replace(/\s+/g, ''))
+						.on("mouseover", function(v) {
+							var shadow = "2px 2px 2px #808080";
+							d3.selectAll("#legendColor_2_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 1).style("stroke", "black");
+							d3.selectAll("#legendText_2_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
+						.on("mouseout", function(v) {
+							var shadow = "2px 2px 2px #aaa";
+							d3.selectAll("#legendColor_2_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 0).style("stroke", "none");
+							d3.selectAll("#legendText_2_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
@@ -639,6 +670,16 @@
 						.style("fill", "black")
 						.text(d.key)
 						.attr('id', 'legendText_3_'+d.values[0].Region.replace(/\s+/g, ''))
+						.on("mouseover", function(v) {
+							var shadow = "2px 2px 2px #808080";
+							d3.selectAll("#legendColor_3_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 1).style("stroke", "black");
+							d3.selectAll("#legendText_3_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
+						.on("mouseout", function(v) {
+							var shadow = "2px 2px 2px #aaa";
+							d3.selectAll("#legendColor_3_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 0).style("stroke", "none");
+							d3.selectAll("#legendText_3_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var legendOpacity = active ? 0.3 : 1;
@@ -656,6 +697,16 @@
 						.attr("width", 10)
 						.attr("height", 10)
 						.attr('id', 'legendColor_3_'+d.values[0].Region.replace(/\s+/g, ''))
+						.on("mouseover", function(v) {
+							var shadow = "2px 2px 2px #808080";
+							d3.selectAll("#legendColor_3_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 1).style("stroke", "black");
+							d3.selectAll("#legendText_3_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
+						.on("mouseout", function(v) {
+							var shadow = "2px 2px 2px #aaa";
+							d3.selectAll("#legendColor_3_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 0).style("stroke", "none");
+							d3.selectAll("#legendText_3_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var legendOpacity = active ? 0.3 : 1;
@@ -923,6 +974,16 @@
 						.style("fill", "black")
 						.text(d.key)
 						.attr('id', 'legendText_4_'+d.values[0].Religion.replace(/\s+/g, ''))
+						.on("mouseover", function(v) {
+							var shadow = "2px 2px 2px #808080";
+							d3.selectAll("#legendColor_4_"+d.values[0].Religion.replace(/\s+/g, '')).style("stroke-width", 1).style("stroke", "black");
+							d3.selectAll("#legendText_4_"+d.values[0].Religion.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
+						.on("mouseout", function(v) {
+							var shadow = "2px 2px 2px #aaa";
+							d3.selectAll("#legendColor_4_"+d.values[0].Religion.replace(/\s+/g, '')).style("stroke-width", 0).style("stroke", "none");
+							d3.selectAll("#legendText_4_"+d.values[0].Religion.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
@@ -942,6 +1003,16 @@
 						.attr("width", 10)
 						.attr("height", 10)
 						.attr('id', 'legendColor_4_'+d.values[0].Religion.replace(/\s+/g, ''))
+						.on("mouseover", function(v) {
+							var shadow = "2px 2px 2px #808080";
+							d3.selectAll("#legendColor_4_"+d.values[0].Religion.replace(/\s+/g, '')).style("stroke-width", 1).style("stroke", "black");
+							d3.selectAll("#legendText_4_"+d.values[0].Religion.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
+						.on("mouseout", function(v) {
+							var shadow = "2px 2px 2px #aaa";
+							d3.selectAll("#legendColor_4_"+d.values[0].Religion.replace(/\s+/g, '')).style("stroke-width", 0).style("stroke", "none");
+							d3.selectAll("#legendText_4_"+d.values[0].Religion.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;

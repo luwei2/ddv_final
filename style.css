@@ -14,13 +14,16 @@
 .tooltip {
   position: absolute;
   text-align: left;
-  width: 100px;
-  height: 50px;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: lightsteelblue;
-  border: 0px;
-  border-radius: 8px;
+  height: 40px;
+  padding: 8px;
+  font-size: 10.5px;
+  font-family: 'Oxigen', sans-serif;
+  color: #595959;
+  background: #e6e6e6;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #808080;
+  border-radius: 2.5px;
   pointer-events: none;
 }
 
