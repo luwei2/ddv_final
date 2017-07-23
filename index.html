@@ -199,10 +199,25 @@
 				dataRegion.forEach(function(d, i) {
 					// Create legend for each region
 					vis.append("text")
-						.attr("x", WIDTH + MARGINS.left + 15)
+						.attr("class", "legend")
+						.attr("x", WIDTH + MARGINS.left + 30)
 						.attr("y", HEIGHT/2 + i * 20)
 						.style("fill", "black")
 						.text(d.key)
+						.on('click', function() {
+							var active = d.active ? false : true;
+							var opacity = active ? 0 : 1;
+							var radius = active ? 0 : 2.5;
+							d3.selectAll("#line_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", opacity);
+							d3.selectAll("#point_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
+							d.active = active;
+						});
+					vis.append("rect")
+						.attr("x", WIDTH + MARGINS.left + 15)
+						.attr("y", HEIGHT/2 + i * 20 - 10)
+						.attr('fill', color(i))
+						.attr("width", 10)
+						.attr("height", 10)
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
