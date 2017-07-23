@@ -303,8 +303,8 @@
 			var vis_2 = d3.select("#FertilityRateVsHapiness");
 
 			// Dimensions
-			var	MARGINS_2 = { top: 20, right: 200, bottom: 130, left: 50 },
-				MARGINS2_2 = { top: 410, right: 200, bottom: 50, left: 50 },
+			var	MARGINS_2 = { top: 20, right: 300, bottom: 130, left: 50 },
+				MARGINS2_2 = { top: 410, right: 300, bottom: 50, left: 50 },
 				WIDTH_2 = +vis_2.attr("width") - MARGINS_2.left - MARGINS_2.right,
 				HEIGHT_2 = +vis_2.attr("height") - MARGINS_2.top - MARGINS_2.bottom,
 				HEIGHT2_2 = +vis_2.attr("height") - MARGINS2_2.top - MARGINS2_2.bottom;
@@ -409,17 +409,56 @@
 				dataRegion_2.forEach(function(d, i) {
 					// Create legend for each region
 					vis_2.append("text")
-						.attr("x", WIDTH_2 + MARGINS_2.left + 15)
+						.attr("class", "legend")
+						.attr("x", WIDTH_2 + MARGINS_2.left + 30)
 						.attr("y", HEIGHT_2/2 + i * 20)
 						.style("fill", "black")
 						.text(d.key)
+						.attr('id', 'legendText_2_'+d.values[0].Region.replace(/\s+/g, ''))
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
+							var legendOpacity = active ? 0.3 : 1;
+							var shadow = active ? "none" : "2px 2px 2px #aaa";
 							var radius = active ? 0 : 4;
+							d3.selectAll("#line_2_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", opacity);
 							d3.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
+							d3.selectAll("#legendColor_2_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
+							d3.selectAll("#legendText_2_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity).style("text-shadow", shadow);
 							d.active = active;
 						});
+					vis_2.append("rect")
+						.attr("x", WIDTH_2 + MARGINS_2.left + 15)
+						.attr("y", HEIGHT_2/2 + i * 20 - 10)
+						.attr('fill', color(i))
+						.attr("width", 10)
+						.attr("height", 10)
+						.attr('id', 'legendColor_2_'+d.values[0].Region.replace(/\s+/g, ''))
+						.on('click', function() {
+							var active = d.active ? false : true;
+							var opacity = active ? 0 : 1;
+							var legendOpacity = active ? 0.3 : 1;
+							var radius = active ? 0 : 4;
+							d3.selectAll("#line_2_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", opacity);
+							d3.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
+							d3.selectAll("#legendColor_2_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
+							d3.selectAll("#legendText_2_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
+							d.active = active;
+						});
+
+
+					// vis_2.append("text")
+					// 	.attr("x", WIDTH_2 + MARGINS_2.left + 15)
+					// 	.attr("y", HEIGHT_2/2 + i * 20)
+					// 	.style("fill", "black")
+					// 	.text(d.key)
+					// 	.on('click', function() {
+					// 		var active = d.active ? false : true;
+					// 		var opacity = active ? 0 : 1;
+					// 		var radius = active ? 0 : 4;
+					// 		d3.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
+					// 		d.active = active;
+					// 	});
 					// Set line color by region
 					context_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color_2(i));
 					points_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color_2(i));
