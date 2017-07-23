@@ -206,6 +206,16 @@
 						.style("fill", "black")
 						.text(d.key)
 						.attr('id', 'legendText_'+d.values[0].Region.replace(/\s+/g, ''))
+						.on("mouseover", function(v) {
+							var shadow = "2px 2px 2px #808080";
+							d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 1).style("stroke", "black");
+							d3.selectAll("#legendText_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
+						.on("mouseout", function(v) {
+							var shadow = "2px 2px 2px #aaa";
+							d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 0).style("stroke", "none");
+							d3.selectAll("#legendText_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						})
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
