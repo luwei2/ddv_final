@@ -20,8 +20,8 @@
 				<svg id="FertilityRateVsGDP" width="1000" height="500"></svg>
 			</div>
 			<div class="section">
-				<input id="slider" type="range" min="1960" max="2015" value="2000" step="1" />
-				<span id="range">2000</span>
+				<input id="slider" type="range" min="1960" max="2015" value="1960" step="1" />
+				<span id="range">1960</span>
 				<button name="play" id="play">Play</button>
 				<svg id="FertilityRateVsGDPAnimated" width="1000" height="500"></svg>
 			</div>
@@ -506,7 +506,7 @@
 			// ******** Scatter plot graph creation *********
 
 			// Source of information
-			d3.csv("https://fvargaspiedra.github.io/FRandGDP.csv", function(data) {	
+			d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {	
 				// Parse Year and convert Fertility Rate into number
 				data.forEach(function(d) {
 					d.Fertility_Rate = +d.Fertility_Rate;
@@ -539,14 +539,31 @@
 				// For each Country Name draw a line graph
 				dataGroup_3.forEach(function(d, i) {
 					if(d.key==$("#slider").val()) {
-						console.log(d);
 						// Add the dots with tooltips
 						points_3.selectAll("dot")
 							.data(d.values)
 							.enter().append("circle")
-							.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; })
-							.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
-							.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); })
+							.attr("r", function(v) {
+								if(v.GDP_Per_Capita == -1) {
+									return 0;
+								} else {
+									return (v.GDP_Per_Capita * 6 / maxGDP) + 1;
+								} 
+							})
+							.attr("cx", function(v) { 
+								if(v.GDP_Per_Capita == -1) {
+									return 0;
+								} else {
+									return xScale_3(v.GDP_Per_Capita);
+								}
+							})
+							.attr("cy", function(v) {
+								if(v.Fertility_Rate == -1) {
+									return 0;
+								} else {
+									return yScale_3(v.Fertility_Rate);
+								}
+							})
 							.classed("line_3", true)
 							.attr('id', function(v) { return 'point_3_'+v.Region.replace(/\s+/g, ''); } )
 							.attr('clip-path', 'url(#clip_3)')
@@ -654,9 +671,27 @@
 								.data(d.values)
 								.transition()
 								.duration(1000)
-								.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
-								.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); })
-								.attr("r", function(v) { return (v.GDP_Per_Capita * 6 / maxGDP) + 1; });
+								.attr("r", function(v) {
+									if(v.GDP_Per_Capita == -1) {
+										return 0;
+									} else {
+										return (v.GDP_Per_Capita * 6 / maxGDP) + 1;
+									} 
+								})
+								.attr("cx", function(v) { 
+									if(v.GDP_Per_Capita == -1) {
+										return 0;
+									} else {
+										return xScale_3(v.GDP_Per_Capita);
+									}
+								})
+								.attr("cy", function(v) {
+									if(v.Fertility_Rate == -1) {
+										return 0;
+									} else {
+										return yScale_3(v.Fertility_Rate);
+									}
+								});
 						}
 					});
 				}
