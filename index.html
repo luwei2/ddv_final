@@ -25,16 +25,19 @@
 			<div class="section">
 				<svg id="FertilityRateVsHapiness" width="1000" height="500"></svg>
 			</div>
+			<div class="section">
+				<svg id="FertilityRateVsReligion" width="1000" height="500"></svg>
+			</div>
 		</div>
 		<div id="footer">About this visualization</div>
 		<script>
 
 			$(document).ready(function() {
 				$('#wrapper').fullpage({
-					sectionsColor: ['#f1f3f4', '#f1f3f4', '#f1f3f4', '#f1f3f4'],
+					sectionsColor: ['#f1f3f4', '#f1f3f4', '#f1f3f4', '#f1f3f4', '#f1f3f4'],
 					navigation: true,
 					navigationPosition: 'right',
-					navigationTooltips: ['Page1', 'Page2', 'Page3', 'Page4']
+					navigationTooltips: ['Page1', 'Page2', 'Page3', 'Page4', 'Page5']
 				});
 			});
 
@@ -432,7 +435,7 @@
 				context_2.append("text")
 					.attr("transform", "translate(" + (WIDTH_2/2) + "," + (HEIGHT2_2 + 40) + ")")
 					.style("text-anchor", "middle")
-					.text("GDP Per Capita");
+					.text("Happiness Score");
 
 				// Y Axis label
 				vis_2.append("text")
@@ -687,7 +690,218 @@
 					});
 				}
 
-			});		
+			});	
+
+			// ***************************************************
+			// *********** FERTILITY RATE VS RELIGION ************
+			// ***************************************************
+
+			// ******** Variable definition *********	
+			
+			var div_4 = d3.select("body").append("div")
+				.attr("class", "tooltip")
+				.style("opacity", 0);
+
+			// Parse time for yearly data		
+			var parseDate = d3.timeParse("%Y");
+			var formatTime = d3.timeFormat("%Y");
+
+			// SVG to be modified selection
+			var vis_4 = d3.select("#FertilityRateVsReligion");
+
+			// Dimensions
+			var	MARGINS_4 = { top: 20, right: 200, bottom: 130, left: 50 },
+				MARGINS2_4 = { top: 410, right: 200, bottom: 50, left: 50 },
+				WIDTH_4 = +vis.attr("width") - MARGINS_4.left - MARGINS_4.right,
+				HEIGHT_4 = +vis.attr("height") - MARGINS_4.top - MARGINS_4.bottom,
+				HEIGHT2_4 = +vis.attr("height") - MARGINS2_4.top - MARGINS2_4.bottom;
+
+			// Scales
+			var xScale_4 = d3.scaleTime().range([0, WIDTH_4]),
+				xScale2_4 = d3.scaleTime().range([0, WIDTH_4]),
+				yScale_4 = d3.scaleLinear().range([HEIGHT_4, 0]),
+				yScale2_4 = d3.scaleLinear().range([HEIGHT2_4, 0]);
+
+			// Axis
+			var	xAxis_4 = d3.axisBottom(xScale_4),
+				xAxis2_4 = d3.axisBottom(xScale2_4),
+				yAxis_4 = d3.axisLeft(yScale_4);
+
+			// Line color
+			var color_4 = d3.scaleOrdinal(d3.schemeCategory10);
+
+			// Define brush call
+			var brush_4 = d3.brushX()
+			    .extent([[0, 0], [WIDTH_4, HEIGHT2_4]])
+			    .on("brush end", brushed_4);
+
+			// Append class focus that will be used to draw the charts
+			var focus_4 = vis_4.append("g")
+			    .attr("class", "focus_4")
+			    .attr("transform", "translate(" + MARGINS_4.left + "," + MARGINS_4.top + ")");
+
+			// Append class context that will be used to draw the charts in the context bar
+			var context_4 = vis_4.append("g")
+			    .attr("class", "context_4")
+			    .attr("transform", "translate(" + MARGINS2_4.left + "," + MARGINS2_4.top + ")");
+
+			// Append class context that will be used to draw the points in the focus bar
+			var points_4 = vis_4.append("g")
+			    .attr("class", "points_4")
+			    .attr("transform", "translate(" + MARGINS_4.left + "," + MARGINS_4.top + ")");
+
+			// Line definition for focus section
+			var lineGen_4 = d3.line()
+				.x(function(d) { return xScale_4(d.Year); })
+				.y(function(d) { return yScale_4(d.Avg_Fertility_Rate); });
+
+			// Line definition for context section
+			var lineGen2_4 = d3.line()
+				.x(function(d) { return xScale2_4(d.Year); })
+				.y(function(d) { return yScale2_4(d.Avg_Fertility_Rate); });
+
+			// ******** Append section *********	
+
+			// clipPath for context bar
+			vis_4.append("defs").append("clipPath")
+				.attr("id", "clip_4")
+				.append("rect")
+				.attr("width", WIDTH_4)
+				.attr("height", HEIGHT_4);
+
+			// ******** Multi-line graph creation *********
+
+			// Source of information
+			d3.csv("https://fvargaspiedra.github.io/FRvsReligion.csv", function(data) {	
+				// Parse Year and convert Fertility Rate into number
+				data.forEach(function(d) {
+					d.Avg_Fertility_Rate = +d.Avg_Fertility_Rate;
+					d.Year = parseDate(d.Year);
+				});
+
+				// Nest data based on Country Name
+				var dataGroup_4 = d3.nest()
+				    .key(function(d) {
+				        return d.Religion;
+				    })
+				    .entries(data);
+
+				// Set domain for ranges dynamically based on data
+				xScale_4.domain([d3.min(data, function(d) { return d.Year; }), d3.max(data, function(d) { return d.Year; })])
+				yScale_4.domain([0, d3.max(data, function(d) { return d.Avg_Fertility_Rate; }) + 1]);
+				xScale2_4.domain(xScale_4.domain());
+				yScale2_4.domain(yScale_4.domain());
+
+				// For each Country Name draw a line graph
+				dataGroup_4.forEach(function(d, i) {
+					// add the dots with tooltips
+					points_4.selectAll("dot")
+						.data(d.values)
+						.enter().append("circle")
+						.attr('fill', color(i))
+						.attr("r", 4.5)
+						.attr("cx", function(v) { return xScale_4(v.Year); })
+						.attr("cy", function(v) { return yScale_4(v.Avg_Fertility_Rate); })
+						.attr("class", "line_4")
+						.attr('id', 'point_4_'+d.values[0].Religion.replace(/\s+/g, ''))
+						.attr('clip-path', 'url(#clip_4)')
+						.on("mouseover", function(v) {
+							div_4.transition()
+								.duration(200)
+								.style("opacity", .9);
+							div_4.html("Year: " + formatTime(v.Year) + "<br/>Avg. FR:" + v.Avg_Fertility_Rate + "<br/>Religin:" + v.Religion)
+								.style("left", (d3.event.pageX) + "px")
+								.style("top", (d3.event.pageY - 28) + "px");
+						})
+						.on("mouseout", function(v) {
+							div_4.transition()
+							.duration(500)
+							.style("opacity", 0);
+						});
+					// Draw the line graph on focus section
+					focus_4.append("path")
+						.datum(d.values)
+						.attr("class", "line_4")
+					    .attr('stroke-width', 1)
+					    .attr('fill', 'none')
+					    .attr('stroke', color(i))
+					    // Set ID with region to each line to easily filter
+					    .attr('id', 'line_4_'+d.values[0].Religion.replace(/\s+/g, ''))
+					    .attr('clip-path', 'url(#clip_4)')
+						.attr("d", lineGen_4(d.values));
+					// Draw the line grapsh on context section
+					context_4.append("path")
+						.datum(d.values)
+						.attr("class", "line_4")
+						.attr('stroke-width', 1)
+					    .attr('fill', 'none')
+					    .attr('stroke', color(i))
+					    // Set ID with region to each line to easily filter
+					    .attr('id', 'line_4_'+d.values[0].Religion.replace(/\s+/g, ''))
+					    .attr('clip-path', 'url(#clip_4)')
+						.attr("d", lineGen2_4(d.values));
+					// Create legend for each region
+					vis_4.append("text")
+						.attr("x", WIDTH_4 + MARGINS_4.left + 15)
+						.attr("y", HEIGHT_4/2 + i * 20)
+						.style("fill", "black")
+						.text(d.key)
+						.on('click', function() {
+							var active = d.active ? false : true;
+							var opacity = active ? 0 : 1;
+							var radius = active ? 0 : 4.5;
+							d3.selectAll("#line_4_"+d.values[0].Religion.replace(/\s+/g, '')).style("opacity", opacity);
+							d3.selectAll("#point_4_"+d.values[0].Religion.replace(/\s+/g, '')).attr("r", radius);
+							d.active = active;
+						});
+				});
+
+				// Set X axis to focus section
+				focus_4.append("g")
+					.attr("class", "axis axis--x")
+					.attr("transform", "translate(0," + HEIGHT_4 + ")")
+					.call(xAxis_4);
+
+				// Set Y axis to focus section
+				focus_4.append("g")
+					.attr("class", "axis axis--y")
+					.call(yAxis_4);
+
+				// Set X axis to focus section
+				context_4.append("g")
+					.attr("class", "axis axis--x")
+					.attr("transform", "translate(0," + HEIGHT2_4 + ")")
+					.call(xAxis2_4);
+
+				// Set brush call for context bar
+				context_4.append("g")
+					.attr("class", "brush_4")
+					.call(brush_4)
+					.call(brush_4.move, xScale_4.range());
+
+				// X Axis label
+				context_4.append("text")
+					.attr("transform", "translate(" + (WIDTH_4/2) + "," + (HEIGHT2_4 + 40) + ")")
+					.style("text-anchor", "middle")
+					.text("Year");
+
+				// Y Axis label
+				vis_4.append("text")
+					.attr("transform", "rotate(-90), translate(" + (-1 * HEIGHT_4 / 2 ) + ", 20)")
+					.style("text-anchor", "middle")
+					.text("Avg. Fertility Rate");    
+			});
+
+			// Refresh ranges and line graphs on focus section for brushing action
+			function brushed_4() {
+				var s = d3.event.selection || xScale2_4.range();
+				xScale_4.domain(s.map(xScale2_4.invert, xScale2_4));
+				focus_4.selectAll(".line_4").attr("d", lineGen_4);
+				points_4.selectAll(".line_4")
+					.attr("cx", function(v) { return xScale_4(v.Year); })
+					.attr("cy", function(v) { return yScale_4(v.Avg_Fertility_Rate); })
+				focus_4.select(".axis--x").call(xAxis_4);
+			}	
 		</script>
 	</body>
 </html>
