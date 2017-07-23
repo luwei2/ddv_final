@@ -59,8 +59,8 @@
 			var vis = d3.select("#byCountryFertilityRate");
 
 			// Dimensions
-			var	MARGINS = { top: 20, right: 200, bottom: 130, left: 50 },
-				MARGINS2 = { top: 410, right: 200, bottom: 50, left: 50 },
+			var	MARGINS = { top: 20, right: 300, bottom: 130, left: 50 },
+				MARGINS2 = { top: 410, right: 300, bottom: 50, left: 50 },
 				WIDTH = +vis.attr("width") - MARGINS.left - MARGINS.right,
 				HEIGHT = +vis.attr("height") - MARGINS.top - MARGINS.bottom,
 				HEIGHT2 = +vis.attr("height") - MARGINS2.top - MARGINS2.bottom;
@@ -204,12 +204,16 @@
 						.attr("y", HEIGHT/2 + i * 20)
 						.style("fill", "black")
 						.text(d.key)
+						.attr('id', 'legendText_'+d.values[0].Region.replace(/\s+/g, ''))
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
+							var legendOpacity = active ? 0.3 : 1;
 							var radius = active ? 0 : 2.5;
 							d3.selectAll("#line_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", opacity);
 							d3.selectAll("#point_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
+							d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
+							d3.selectAll("#legendText_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
 							d.active = active;
 						});
 					vis.append("rect")
@@ -218,12 +222,16 @@
 						.attr('fill', color(i))
 						.attr("width", 10)
 						.attr("height", 10)
+						.attr('id', 'legendColor_'+d.values[0].Region.replace(/\s+/g, ''))
 						.on('click', function() {
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
+							var legendOpacity = active ? 0.3 : 1;
 							var radius = active ? 0 : 2.5;
 							d3.selectAll("#line_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", opacity);
 							d3.selectAll("#point_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
+							d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
+							d3.selectAll("#legendText_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
 							d.active = active;
 						});
 					// Set line color by region
