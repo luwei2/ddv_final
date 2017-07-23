@@ -320,11 +320,11 @@
 
 				// add the Y gridlines
 				focus.append("g")			
-				.attr("class", "grid")
-				.call(make_y_gridlines()
-					.tickSize(-WIDTH)
-					.tickFormat("")
-				)   
+					.attr("class", "grid")
+					.call(make_y_gridlines()
+						.tickSize(-WIDTH)
+						.tickFormat("")
+					)   
 			});
 
 			// Refresh ranges and line graphs on focus section for brushing action
@@ -367,6 +367,18 @@
 				xScale2_2 = d3.scaleLinear().range([0, WIDTH_2]),
 				yScale_2 = d3.scaleLinear().range([HEIGHT_2, 0]),
 				yScale2_2 = d3.scaleLinear().range([HEIGHT2_2, 0]);
+
+			// gridlines in x axis function
+			function make_x_gridlines_2() {		
+			    return d3.axisBottom(xScale_2)
+			        .ticks(10)
+			}
+
+			// gridlines in y axis function
+			function make_y_gridlines_2() {		
+			    return d3.axisLeft(yScale_2)
+			        .ticks(10)
+			}
 
 			// Axis
 			var	xAxis_2 = d3.axisBottom(xScale_2),
@@ -423,40 +435,56 @@
 				xScale2_2.domain(xScale_2.domain());
 				yScale2_2.domain(yScale_2.domain());
 
-				// For each Country Name draw a line graph
-					// Add the dots with tooltips
-					points_2.selectAll("dot")
-						.data(data)
-						.enter().append("circle")
-						.attr("r", 4)
-						.attr("cx", function(v) { return xScale_2(v.Happiness_Score); })
-						.attr("cy", function(v) { return yScale_2(v.Fertility_Rate); })
-						.attr("class", "line_2")
-						.attr('id', function(v) { return 'point_2_'+v.Region.replace(/\s+/g, ''); } )
-						.attr('clip-path', 'url(#clip_2)')
-						.on("mouseover", function(v) {
-							div_2.transition()
-								.duration(200)
-								.style("opacity", .9);
-							div_2.html("<b style='font-size:12px; color:#333333'>" + v.Country_Name + "</b><br/><b>Year: 2015</b><br/><b>Fertility Rate: </b>" + v.Fertility_Rate + "<br/><b>Happiness Score: </b>" + v.Happiness_Score)
-								.style("left", (d3.event.pageX) + "px")
-								.style("top", (d3.event.pageY - 28) + "px");
-						})
-						.on("mouseout", function(v) {
-							div_2.transition()
-							.duration(500)
-							.style("opacity", 0);
-						});
-					// Draw the scatter graph on context section
-					context_2.selectAll("dot")
-						.data(data)
-						.enter().append("circle")
-						.attr("r", 2.5)
-						.attr("cx", function(v) { return xScale2_2(v.Happiness_Score); })
-						.attr("cy", function(v) { return yScale2_2(v.Fertility_Rate); })
-						.attr("class", "line_2")
-						.attr('id', function(v) { return 'point_2_'+v.Region.replace(/\s+/g, '') } )
-						.attr('clip-path', 'url(#clip_2)');
+				// add the X gridlines
+				points_2.append("g")			
+					.attr("class", "grid")
+					.attr("transform", "translate(0," + HEIGHT_2 + ")")
+					.call(make_x_gridlines_2()
+						.tickSize(-HEIGHT_2)
+						.tickFormat("")
+					)
+
+				// add the Y gridlines
+				points_2.append("g")			
+				.attr("class", "grid")
+				.call(make_y_gridlines_2()
+					.tickSize(-WIDTH_2)
+					.tickFormat("")
+				) 
+
+				// Add the dots with tooltips
+				points_2.selectAll("dot")
+					.data(data)
+					.enter().append("circle")
+					.attr("r", 4)
+					.attr("cx", function(v) { return xScale_2(v.Happiness_Score); })
+					.attr("cy", function(v) { return yScale_2(v.Fertility_Rate); })
+					.attr("class", "line_2")
+					.attr('id', function(v) { return 'point_2_'+v.Region.replace(/\s+/g, ''); } )
+					.attr('clip-path', 'url(#clip_2)')
+					.on("mouseover", function(v) {
+						div_2.transition()
+							.duration(200)
+							.style("opacity", .9);
+						div_2.html("<b style='font-size:12px; color:#333333'>" + v.Country_Name + "</b><br/><b>Year: 2015</b><br/><b>Fertility Rate: </b>" + v.Fertility_Rate + "<br/><b>Happiness Score: </b>" + v.Happiness_Score)
+							.style("left", (d3.event.pageX) + "px")
+							.style("top", (d3.event.pageY - 28) + "px");
+					})
+					.on("mouseout", function(v) {
+						div_2.transition()
+						.duration(500)
+						.style("opacity", 0);
+					});
+				// Draw the scatter graph on context section
+				context_2.selectAll("dot")
+					.data(data)
+					.enter().append("circle")
+					.attr("r", 2.5)
+					.attr("cx", function(v) { return xScale2_2(v.Happiness_Score); })
+					.attr("cy", function(v) { return yScale2_2(v.Fertility_Rate); })
+					.attr("class", "line_2")
+					.attr('id', function(v) { return 'point_2_'+v.Region.replace(/\s+/g, '') } )
+					.attr('clip-path', 'url(#clip_2)');
 
 				// For each Region add a legend
 				dataRegion_2.forEach(function(d, i) {
@@ -556,7 +584,7 @@
 				vis_2.append("text")
 					.attr("transform", "rotate(-90), translate(" + (-1 * HEIGHT_2 / 2 ) + ", 20)")
 					.style("text-anchor", "middle")
-					.text("Total Fertility Rate");    
+					.text("Total Fertility Rate");     
 			});
 
 			// Refresh ranges and line graphs on focus section for brushing action
@@ -565,8 +593,12 @@
 				xScale_2.domain(s.map(xScale2_2.invert, xScale2_2));
 				points_2.selectAll(".line_2")
 					.attr("cx", function(v) { return xScale_2(v.Happiness_Score); })
-					.attr("cy", function(v) { return yScale_2(v.Fertility_Rate); })
+					.attr("cy", function(v) { return yScale_2(v.Fertility_Rate); });
 				points_2.select(".axis--x").call(xAxis_2);
+				points_2.select(".grid").call(make_x_gridlines_2()
+						.tickSize(-HEIGHT_2)
+						.tickFormat("")
+					);
 			}
 
 			// ************************************************************
@@ -590,6 +622,18 @@
 			// Scales
 			var xScale_3 = d3.scaleLinear().range([0, WIDTH_3]),
 				yScale_3 = d3.scaleLinear().range([HEIGHT_3, 0]);
+
+			// gridlines in x axis function
+			function make_x_gridlines_3() {		
+			    return d3.axisBottom(xScale_3)
+			        .ticks(10)
+			}
+
+			// gridlines in y axis function
+			function make_y_gridlines_3() {		
+			    return d3.axisLeft(yScale_3)
+			        .ticks(10)
+			}
 
 			// Axis
 			var	xAxis_3 = d3.axisBottom(xScale_3),
@@ -639,6 +683,23 @@
 				// Set domain for ranges dynamically based on data
 				xScale_3.domain([d3.min(data, function(d) { return d.GDP_Per_Capita; }) - 100, d3.max(data, function(d) { return d.GDP_Per_Capita; }) + 5000])
 				yScale_3.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; }) + 1]);
+
+				// add the X gridlines
+				points_3.append("g")			
+					.attr("class", "grid")
+					.attr("transform", "translate(0," + HEIGHT_3 + ")")
+					.call(make_x_gridlines_3()
+						.tickSize(-HEIGHT_3)
+						.tickFormat("")
+					)
+
+				// add the Y gridlines
+				points_3.append("g")			
+				.attr("class", "grid")
+				.call(make_y_gridlines_3()
+					.tickSize(-WIDTH_3)
+					.tickFormat("")
+				) 
 
 				// Max GDP value to calculate radius
 				var maxGDP = d3.max(data, function(d) { return d.GDP_Per_Capita; });
@@ -880,6 +941,18 @@
 				yScale_4 = d3.scaleLinear().range([HEIGHT_4, 0]),
 				yScale2_4 = d3.scaleLinear().range([HEIGHT2_4, 0]);
 
+			// gridlines in x axis function
+			function make_x_gridlines_4() {		
+			    return d3.axisBottom(xScale_4)
+			        .ticks(10)
+			}
+
+			// gridlines in y axis function
+			function make_y_gridlines_4() {		
+			    return d3.axisLeft(yScale_4)
+			        .ticks(10)
+			}
+
 			// Axis
 			var	xAxis_4 = d3.axisBottom(xScale_4),
 				xAxis2_4 = d3.axisBottom(xScale2_4),
@@ -949,6 +1022,23 @@
 				yScale_4.domain([0, d3.max(data, function(d) { return d.Avg_Fertility_Rate; }) + 1]);
 				xScale2_4.domain(xScale_4.domain());
 				yScale2_4.domain(yScale_4.domain());
+
+				// add the X gridlines
+				focus_4.append("g")			
+					.attr("class", "grid")
+					.attr("transform", "translate(0," + HEIGHT_4 + ")")
+					.call(make_x_gridlines_4()
+						.tickSize(-HEIGHT_4)
+						.tickFormat("")
+					)
+
+				// add the Y gridlines
+				focus_4.append("g")			
+					.attr("class", "grid")
+					.call(make_y_gridlines_4()
+						.tickSize(-WIDTH_4)
+						.tickFormat("")
+					) 
 
 				// For each Country Name draw a line graph
 				dataGroup_4.forEach(function(d, i) {
@@ -1103,6 +1193,10 @@
 				points_4.selectAll(".line_4")
 					.attr("cx", function(v) { return xScale_4(v.Year); })
 					.attr("cy", function(v) { return yScale_4(v.Avg_Fertility_Rate); })
+				focus_4.select(".grid").call(make_x_gridlines_4()
+						.tickSize(-HEIGHT_4)
+						.tickFormat("")
+					);
 				focus_4.select(".axis--x").call(xAxis_4);
 			}	
 		</script>
