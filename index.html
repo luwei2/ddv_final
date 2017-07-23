@@ -166,7 +166,7 @@
 						.attr("cx", function(v) { return xScale(v.Year); })
 						.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
 						.attr("class", "line")
-						.attr('id', 'point_'+d.values[0].Region)
+						.attr('id', 'point_'+d.values[0].Region.replace(/\s+/g, ''))
 						.attr('clip-path', 'url(#clip)')
 						.on("mouseover", function(v) {
 							div.transition()
@@ -188,7 +188,7 @@
 					    .attr('stroke-width', 1)
 					    .attr('fill', 'none')
 					    // Set ID with region to each line to easily filter
-					    .attr('id', 'line_'+d.values[0].Region)
+					    .attr('id', 'line_'+d.values[0].Region.replace(/\s+/g, ''))
 					    .attr('clip-path', 'url(#clip)')
 						.attr("d", lineGen(d.values));
 					// Draw the line grapsh on context section
@@ -198,7 +198,7 @@
 						.attr('stroke-width', 1)
 					    .attr('fill', 'none')
 					    // Set ID with region to each line to easily filter
-					    .attr('id', 'line_'+d.values[0].Region)
+					    .attr('id', 'line_'+d.values[0].Region.replace(/\s+/g, ''))
 					    .attr('clip-path', 'url(#clip)')
 						.attr("d", lineGen2(d.values));
 				});
@@ -215,14 +215,14 @@
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
 							var radius = active ? 0 : 2.5;
-							d3.selectAll("#line_"+d.values[0].Region).style("opacity", opacity);
-							d3.selectAll("#point_"+d.values[0].Region).attr("r", radius);
+							d3.selectAll("#line_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", opacity);
+							d3.selectAll("#point_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
 							d.active = active;
 						});
 					// Set line color by region
-					focus.selectAll("#line_"+d.values[0].Region).attr('stroke', color(i));
-					context.selectAll("#line_"+d.values[0].Region).attr('stroke', color(i));
-					points.selectAll("#point_"+d.values[0].Region).attr('fill', color(i));
+					focus.selectAll("#line_"+d.values[0].Region.replace(/\s+/g, '')).attr('stroke', color(i));
+					context.selectAll("#line_"+d.values[0].Region.replace(/\s+/g, '')).attr('stroke', color(i));
+					points.selectAll("#point_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color(i));
 				});
 
 				// Set X axis to focus section
