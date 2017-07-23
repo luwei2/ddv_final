@@ -101,21 +101,13 @@
 
 			// Line definition for focus section
 			var lineGen = d3.line()
-				.x(function(d) {
-				return xScale(d.Year);
-				})
-				.y(function(d) {
-				return yScale(d.Fertility_Rate);
-				});
+				.x(function(d) { return xScale(d.Year); })
+				.y(function(d) { return yScale(d.Fertility_Rate); });
 
 			// Line definition for context section
 			var lineGen2 = d3.line()
-				.x(function(d) {
-				return xScale2(d.Year);
-				})
-				.y(function(d) {
-				return yScale2(d.Fertility_Rate);
-				});
+				.x(function(d) { return xScale2(d.Year); })
+				.y(function(d) { return yScale2(d.Fertility_Rate); });
 
 			// ******** Append section *********	
 

@@ -11,19 +11,7 @@
 	bottom:0px;
 }
 
-.zoom {
-  cursor: move;
-  fill: none;
-  pointer-events: all;
-}
-
-.legend {
-    font-size: 12px;
-    font-weight: normal;
-    text-anchor: left;
-}
-
-div.tooltip {
+.tooltip {
   position: absolute;
   text-align: left;
   width: 100px;
