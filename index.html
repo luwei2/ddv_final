@@ -6,6 +6,7 @@
 		<script src="jquery-1.11.3.js"></script>
 		<script src="jquery.fullPage.min.js"></script>
 		<link rel="stylesheet" href="jquery.fullPage.css">
+		<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 	</head>
 	<body>
 		<div id="wrapper">
@@ -209,11 +210,12 @@
 							var active = d.active ? false : true;
 							var opacity = active ? 0 : 1;
 							var legendOpacity = active ? 0.3 : 1;
+							var shadow = active ? "none" : "2px 2px 2px #aaa";
 							var radius = active ? 0 : 2.5;
 							d3.selectAll("#line_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", opacity);
 							d3.selectAll("#point_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
 							d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
-							d3.selectAll("#legendText_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
+							d3.selectAll("#legendText_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity).style("text-shadow", shadow);
 							d.active = active;
 						});
 					vis.append("rect")

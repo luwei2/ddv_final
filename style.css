@@ -24,6 +24,15 @@
   pointer-events: none;
 }
 
+.legend {
+  font-size: 13px;
+  text-shadow: 2px 2px 2px #aaa;
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
+}
+
 svg {
 	display: block;
 	margin: auto;
