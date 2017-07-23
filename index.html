@@ -506,7 +506,7 @@
 			// ******** Scatter plot graph creation *********
 
 			// Source of information
-			d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {	
+			d3.csv("https://fvargaspiedra.github.io/FRbyCountry.csv", function(data) {	
 				// Parse Year and convert Fertility Rate into number
 				data.forEach(function(d) {
 					d.Fertility_Rate = +d.Fertility_Rate;
@@ -547,7 +547,7 @@
 							.attr("cx", function(v) { return xScale_3(v.GDP_Per_Capita); })
 							.attr("cy", function(v) { return yScale_3(v.Fertility_Rate); })
 							.classed("line_3", true)
-							.attr('id', function(v) { return 'point_3_'+v.Region; } )
+							.attr('id', function(v) { return 'point_3_'+v.Region.replace(/\s+/g, ''); } )
 							.attr('clip-path', 'url(#clip_3)')
 							.on("mouseover", function(v) {
 								div_3.transition()
