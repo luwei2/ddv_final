@@ -506,7 +506,7 @@
 			// ******** Scatter plot graph creation *********
 
 			// Source of information
-			d3.csv("https://fvargaspiedra.github.io/cities.csv", function(data) {	
+			d3.csv("https://fvargaspiedra.github.io/FRandGDP.csv", function(data) {	
 				// Parse Year and convert Fertility Rate into number
 				data.forEach(function(d) {
 					d.Fertility_Rate = +d.Fertility_Rate;
@@ -628,7 +628,7 @@
 				var timer;
 
 				$("button").on("click", function() {
-					var duration = 3000,
+					var duration = 500,
 					maxstep = 2015,
 					minstep = 1960;
 					if (running == true) {
