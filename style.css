@@ -35,11 +35,6 @@ body {
   font-family: 'Raleway', sans-serif;
 }
 
-/*svg {
-	display: block;
-	margin: auto;
-}*/
-
 .grid line {
   stroke: lightgrey;
   stroke-opacity: 0.7;
@@ -65,14 +60,19 @@ body {
 }
 
 #player {
-  padding-left: 50px;
+  padding-left: 55px;
 }
 
+#section2title {
+  padding-left: 140px;
+  font-size: 20px;
+  font-weight: bold;
+}
 #play {
   display: inline-block;
   width: 60px;
   padding: 8px 8px;
-  font-size: 10px;
+  font-size: 12px;
   cursor: pointer;
   text-align: center;
   text-decoration: none;
@@ -88,6 +88,6 @@ body {
 
 #play:active {
   background-color: #3e8e41;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
+  box-shadow: 0 1px #666;
+  transform: translateY(2px);
 }

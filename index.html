@@ -21,10 +21,11 @@
 			</div>
 			<div class="section">
 				<div id="section2_graph">
+					<div id="section2title">Fertility Rate and GDP per capita in <span id="title">1960</span><br/><br/></div>
 					<div id="player">
-						<button name="play" id="play">Play</button><br/><br/>
-						<input id="slider" style="width:200px;" type="range" min="1960" max="2015" value="1960" step="1" />
-						<span id="range">1960</span><br/>
+						<button name="play" id="play">Play</button>&nbsp;&nbsp;&nbsp;&nbsp;
+						<input id="slider" style="width:400px;" type="range" min="1960" max="2015" value="1960" step="1" />
+						<span id="range">1960</span><br/><br/>
 					</div>
 					<svg id="FertilityRateVsGDP" width="800" height="450"></svg>
 				</div>
@@ -862,6 +863,7 @@
 								sliderValue++;
 								$("#slider").val(sliderValue);
 								$('#range').html(sliderValue);
+								$('#title').html(sliderValue);
 							} else {
 								$("button").html("Play");
 								running = false;
@@ -877,6 +879,7 @@
 				$("#slider").on("change", function(){
 					update();
 					$("#range").html($("#slider").val());
+					$("#title").html($("#slider").val());
 					clearInterval(timer);
 					$("button").html("Play");
 					running = false;
