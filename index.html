@@ -88,7 +88,7 @@
 					navigation: true,
 					navigationPosition: 'right',
 					navigationTooltips: ['Intro', 'Region', 'GDP', 'Happiness', 'Religion', 'About'],
-					anchors:['Intro', 'Region', 'GDP', 'Happiness', 'Religion', 'About']
+					anchors:['Intro', 'Overview', 'GDP', 'Happiness', 'Religion', 'About']
 				});
 			});
 
@@ -428,13 +428,13 @@
 				yScale_2 = d3.scaleLinear().range([HEIGHT_2, 0]),
 				yScale2_2 = d3.scaleLinear().range([HEIGHT2_2, 0]);
 
-			// gridlines in x axis function
+			// Grid Lines X-axis function
 			function make_x_gridlines_2() {		
 			    return d3.axisBottom(xScale_2)
 			        .ticks(10)
 			}
 
-			// gridlines in y axis function
+			// Grid Lines Y-axis function
 			function make_y_gridlines_2() {		
 			    return d3.axisLeft(yScale_2)
 			        .ticks(10)
@@ -455,14 +455,12 @@
 			    .attr("class", "context_2")
 			    .attr("transform", "translate(" + MARGINS2_2.left + "," + MARGINS2_2.top + ")");
 
-			// Append class context that will be used to draw the points in the focus bar
+			// Append class points that will be used to draw the points in the graph
 			var points_2 = vis_2.append("g")
 			    .attr("class", "points_2")
 			    .attr("transform", "translate(" + MARGINS_2.left + "," + MARGINS_2.top + ")");
 
-			// ******** Append section *********	
-
-			// clipPath for context bar
+			// clipPath definition
 			vis_2.append("defs").append("clipPath")
 				.attr("id", "clip_2")
 				.append("rect")
@@ -473,7 +471,8 @@
 
 			// Source of information
 			d3.csv("https://fvargaspiedra.github.io/FRvsHappiness.csv", function(data) {	
-				// Parse Year and convert Fertility Rate into number
+				
+				// Fertility rate and happiness score to number
 				data.forEach(function(d) {
 					d.Fertility_Rate = +d.Fertility_Rate;
 					d.Happiness_Score = +d.Happiness_Score;
@@ -481,9 +480,7 @@
 
 				// Nest data based on Region
 				var dataRegion_2 = d3.nest()
-				    .key(function(d) {
-				        return d.Region;
-				    })
+				    .key(function(d) { return d.Region; })
 				    .entries(data);
 
 				// Set domain for ranges dynamically based on data
@@ -492,7 +489,7 @@
 				xScale2_2.domain(xScale_2.domain());
 				yScale2_2.domain(yScale_2.domain());
 
-				// add the X gridlines
+				// Add the grid lines to X-Axis
 				points_2.append("g")			
 					.attr("class", "grid")
 					.attr("transform", "translate(0," + HEIGHT_2 + ")")
@@ -501,7 +498,7 @@
 						.tickFormat("")
 					)
 
-				// add the Y gridlines
+				// Add the grid lines to Y-Axis
 				points_2.append("g")			
 				.attr("class", "grid")
 				.call(make_y_gridlines_2()
@@ -532,6 +529,7 @@
 						.duration(500)
 						.style("opacity", 0);
 					});
+
 				// Draw the scatter graph on context section
 				context_2.selectAll("dot")
 					.data(data)
@@ -543,9 +541,10 @@
 					.attr('id', function(v) { return 'point_2_'+v.Region.replace(/\s+/g, '') } )
 					.attr('clip-path', 'url(#clip_2)');
 
-				// For each Region add a legend
+				// For each Region add a legend and color
 				dataRegion_2.forEach(function(d, i) {
-					// Create legend for each region
+
+					// Create legend text for each region
 					vis_2.append("text")
 						.attr("class", "legend")
 						.attr("x", WIDTH_2 + MARGINS_2.left + 30)
@@ -575,6 +574,8 @@
 							d3.selectAll("#legendText_2_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity).style("text-shadow", shadow);
 							d.active = active;
 						});
+
+					// Create colored rectangle for each region				
 					vis_2.append("rect")
 						.attr("x", WIDTH_2 + MARGINS_2.left + 15)
 						.attr("y", HEIGHT_2/2 + i * 20 - 10)
@@ -603,23 +604,24 @@
 							d3.selectAll("#legendText_2_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
 							d.active = active;
 						});
-					// Set line color by region
+
+					// Set dots color by region
 					context_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color(i));
 					points_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color(i));
 				});
 
-				// Set X axis to focus section
+				// Set X axis to scatter plot section
 				points_2.append("g")
 					.attr("class", "axis axis--x")
 					.attr("transform", "translate(0," + HEIGHT_2 + ")")
 					.call(xAxis_2);
 
-				// Set Y axis to focus section
+				// Set Y axis to scatter plot section
 				points_2.append("g")
 					.attr("class", "axis axis--y")
 					.call(yAxis_2);
 
-				// Set X axis to focus section
+				// Set X axis to context section
 				context_2.append("g")
 					.attr("class", "axis axis--x")
 					.attr("transform", "translate(0," + HEIGHT2_2 + ")")
@@ -644,7 +646,7 @@
 					.text("Fertility Rate (births per woman)");     
 			});
 
-			// Refresh ranges and line graphs on focus section for brushing action
+			// Refresh ranges and line graphs on scatter plot section for brushing action
 			function brushed_2() {
 				var s = d3.event.selection || xScale2_2.range();
 				xScale_2.domain(s.map(xScale2_2.invert, xScale2_2));
@@ -680,13 +682,13 @@
 			var xScale_3 = d3.scaleLinear().range([0, WIDTH_3]),
 				yScale_3 = d3.scaleLinear().range([HEIGHT_3, 0]);
 
-			// gridlines in x axis function
+			// Grid Lines X-axis function
 			function make_x_gridlines_3() {		
 			    return d3.axisBottom(xScale_3)
 			        .ticks(10)
 			}
 
-			// gridlines in y axis function
+			// Grid Lines Y-axis function
 			function make_y_gridlines_3() {		
 			    return d3.axisLeft(yScale_3)
 			        .ticks(10)
@@ -993,13 +995,13 @@
 				yScale_4 = d3.scaleLinear().range([HEIGHT_4, 0]),
 				yScale2_4 = d3.scaleLinear().range([HEIGHT2_4, 0]);
 
-			// gridlines in x axis function
+			// Grid Lines X-axis function
 			function make_x_gridlines_4() {		
 			    return d3.axisBottom(xScale_4)
 			        .ticks(10)
 			}
 
-			// gridlines in y axis function
+			// Grid Lines Y-axis function
 			function make_y_gridlines_4() {		
 			    return d3.axisLeft(yScale_4)
 			        .ticks(10)
