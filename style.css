@@ -68,3 +68,7 @@ body {
   box-shadow: 0 1px #666;
   transform: translateY(2px);
 }
+
+#sectionImage1{
+    background-image: url(https://fvargaspiedra.github.io/PregnantWoman.png);
+  }
