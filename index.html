@@ -77,6 +77,10 @@
 		</div>
 		<a id="footer" href="#About">About this visualization</a>
 		<script>
+			
+			// ***************************************************
+			// ************ Initialize fullpage.js ***************
+			// ***************************************************
 
 			$(document).ready(function() {
 				$('#wrapper').fullpage({
@@ -89,18 +93,26 @@
 			});
 
 			// ***************************************************
-			// ******* FERTILITY RATE BY COUNTRY OVERVIEW ********
+			// **************** GLOBAL UTILITIES *****************
 			// ***************************************************
-
-			// ******** Variable definition *********	
-			
-			var div = d3.select("body").append("div")
-				.attr("class", "tooltip")
-				.style("opacity", 0);
 
 			// Parse time for yearly data		
 			var parseDate = d3.timeParse("%Y");
 			var formatTime = d3.timeFormat("%Y");
+
+			// Line color
+			var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+			// ***************************************************
+			// ********* FERTILITY RATE BY REGION GRAPH **********
+			// ***************************************************
+
+			// ******** General definitions *********	
+			
+			// Div for tooltips
+			var div = d3.select("body").append("div")
+				.attr("class", "tooltip")
+				.style("opacity", 0);
 
 			// SVG to be modified selection
 			var vis = d3.select("#byCountryFertilityRate");
@@ -118,13 +130,13 @@
 				yScale = d3.scaleLinear().range([HEIGHT, 0]),
 				yScale2 = d3.scaleLinear().range([HEIGHT2, 0]);
 
-			// gridlines in x axis function
+			// Grid Lines X-axis function
 			function make_x_gridlines() {		
 			    return d3.axisBottom(xScale)
 			        .ticks(10)
 			}
 
-			// gridlines in y axis function
+			// Grid Lines Y-axis function
 			function make_y_gridlines() {		
 			    return d3.axisLeft(yScale)
 			        .ticks(10)
@@ -134,9 +146,6 @@
 			var	xAxis = d3.axisBottom(xScale),
 				xAxis2 = d3.axisBottom(xScale2),
 				yAxis = d3.axisLeft(yScale);
-
-			// Line color
-			var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 			// Define brush call
 			var brush = d3.brushX()
@@ -431,9 +440,6 @@
 				xAxis2_2 = d3.axisBottom(xScale2_2),
 				yAxis_2 = d3.axisLeft(yScale_2);
 
-			// Line color
-			var color_2 = d3.scaleOrdinal(d3.schemeCategory10);
-
 			// Define brush call
 			var brush_2 = d3.brushX()
 			    .extent([[0, 0], [WIDTH_2, HEIGHT2_2]])
@@ -593,8 +599,8 @@
 							d.active = active;
 						});
 					// Set line color by region
-					context_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color_2(i));
-					points_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color_2(i));
+					context_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color(i));
+					points_2.selectAll("#point_2_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color(i));
 				});
 
 				// Set X axis to focus section
@@ -684,9 +690,6 @@
 			// Axis
 			var	xAxis_3 = d3.axisBottom(xScale_3),
 				yAxis_3 = d3.axisLeft(yScale_3);
-
-			// Line color
-			var color_3 = d3.scaleOrdinal(d3.schemeCategory10);
 
 			// Append class context that will be used to draw the points in the focus bar
 			var points_3 = vis_3.append("g")
@@ -857,7 +860,7 @@
 							d.active = active;
 						});
 					// Set line color by region
-					points_3.selectAll("#point_3_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color_3(i));
+					points_3.selectAll("#point_3_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color(i));
 				});
 
 				// Set X axis to focus section
@@ -969,10 +972,6 @@
 				.attr("class", "tooltip")
 				.style("opacity", 0);
 
-			// Parse time for yearly data		
-			var parseDate = d3.timeParse("%Y");
-			var formatTime = d3.timeFormat("%Y");
-
 			// SVG to be modified selection
 			var vis_4 = d3.select("#FertilityRateVsReligion");
 
@@ -1005,9 +1004,6 @@
 			var	xAxis_4 = d3.axisBottom(xScale_4),
 				xAxis2_4 = d3.axisBottom(xScale2_4),
 				yAxis_4 = d3.axisLeft(yScale_4);
-
-			// Line color
-			var color_4 = d3.scaleOrdinal(d3.schemeCategory10);
 
 			// Define brush call
 			var brush_4 = d3.brushX()
