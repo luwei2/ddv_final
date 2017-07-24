@@ -18,10 +18,14 @@
 				<svg id="byCountryFertilityRate" width="1000" height="500"></svg>
 			</div>
 			<div class="section">
-				<input id="slider" type="range" min="1960" max="2015" value="1960" step="1" />
-				<span id="range">1960</span>
-				<button name="play" id="play">Play</button>
-				<svg id="FertilityRateVsGDP" width="1000" height="500"></svg>
+				<div id="section1_graph">
+					<div id="player">
+						<button name="play" id="play">Play</button><br/><br/>
+						<input id="slider" style="width:200px;" type="range" min="1960" max="2015" value="1960" step="1" />
+						<span id="range">1960</span><br/>
+					</div>
+					<svg id="FertilityRateVsGDP" width="1000" height="450"></svg>
+				</div>
 			</div>
 			<div class="section">
 				<svg id="FertilityRateVsHapiness" width="1000" height="500"></svg>
@@ -615,9 +619,9 @@
 			var vis_3 = d3.select("#FertilityRateVsGDP");
 
 			// Dimensions
-			var	MARGINS_3 = { top: 20, right: 300, bottom: 130, left: 50 },
-				WIDTH_3 = +vis_3.attr("width") - MARGINS_2.left - MARGINS_2.right,
-				HEIGHT_3 = +vis_3.attr("height") - MARGINS_2.top - MARGINS_2.bottom;
+			var	MARGINS_3 = { top: 20, right: 300, bottom: 50, left: 50 },
+				WIDTH_3 = +vis_3.attr("width") - MARGINS_3.left - MARGINS_3.right,
+				HEIGHT_3 = +vis_3.attr("height") - MARGINS_3.top - MARGINS_3.bottom;
 
 			// Scales
 			var xScale_3 = d3.scaleLinear().range([0, WIDTH_3]),
@@ -817,7 +821,7 @@
 				// Set X axis to focus section
 				points_3.append("g")
 					.attr("class", "axis axis--x")
-					.attr("transform", "translate(0," + HEIGHT + ")")
+					.attr("transform", "translate(0," + HEIGHT_3 + ")")
 					.call(xAxis_3);
 
 				// Set Y axis to focus section

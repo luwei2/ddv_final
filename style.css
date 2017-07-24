@@ -35,10 +35,10 @@ body {
   font-family: 'Raleway', sans-serif;
 }
 
-svg {
+/*svg {
 	display: block;
 	margin: auto;
-}
+}*/
 
 .grid line {
   stroke: lightgrey;
@@ -48,4 +48,39 @@ svg {
 
 .grid path {
   stroke-width: 0;
+}
+
+#section1_graph {
+  display: block;
+  margin: auto;
+  padding-left: 3%;
+  text-align: left;
+}
+
+#player {
+  padding-left: 50px;
+}
+
+#play {
+  display: inline-block;
+  width: 60px;
+  padding: 8px 8px;
+  font-size: 10px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 3px #999;
+}
+
+#play:hover {background-color: #3e8e41}
+
+#play:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
 }
