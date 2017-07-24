@@ -53,7 +53,14 @@ body {
 #section1_graph {
   display: block;
   margin: auto;
-  padding-left: 3%;
+  padding-right: 1.5%;
+  text-align: right;
+}
+
+#section2_graph {
+  display: block;
+  margin: auto;
+  padding-left: 1.5%;
   text-align: left;
 }
 
