@@ -16,10 +16,10 @@
 			</div>
 			<div class="section" style="width:100%; height:100%; padding-left:1%; padding-right:1%;">
 				<div style="float: right; width: 70%; text-align: center;">
-					<div style="padding-right: 140px; font-size: 20px; font-weight: bold;">Fertility Rate by region<br/><br/></div>
+					<div style="padding-right: 140px; font-size: 20px; font-weight: bold;">Fertility Rate by region<br/></div>
 					<svg id="byCountryFertilityRate" width="800" height="500"></svg>
 				</div>
-				<div style="float: right; width: 30%;">
+				<div style="float: left; width: 30%;">
 					<div>
 						Hola mundo
 					</div>
@@ -41,11 +41,27 @@
 					</div>
 				</div>
 			</div>
-			<div class="section">
-				<svg id="FertilityRateVsHapiness" width="1000" height="500"></svg>
+			<div class="section" style="width:100%; height:100%; padding-left:1%; padding-right:1%;">
+				<div style="float: right; width: 70%; text-align: center;">
+					<div style="padding-right: 140px; font-size: 20px; font-weight: bold;">Fertility Rate and Hapiness Score in 2015<br/></div>
+					<svg id="FertilityRateVsHapiness" width="800" height="500"></svg>
+				</div>
+				<div style="float: left; width: 30%;">
+					<div>
+						Hola mundo
+					</div>
+				</div>	
 			</div>
-			<div class="section">
-				<svg id="FertilityRateVsReligion" width="1000" height="500"></svg>
+			<div class="section" style="width:100%; height:100%; padding-left:1%; padding-right:1%;">
+				<div style="float: left; width: 70%;">
+					<div style="padding-left: 140px; font-size: 20px; font-weight: bold;">Fertility Rate and Religion from 1960 to 2010<br/></div>
+					<svg id="FertilityRateVsReligion" width="800" height="500"></svg>
+				</div>
+				<div style="float: right; width: 30%;">
+					<div>
+						Hola mundo
+					</div>
+				</div>	
 			</div>
 		</div>
 		<div id="footer">About this visualization</div>
@@ -374,8 +390,8 @@
 			var vis_2 = d3.select("#FertilityRateVsHapiness");
 
 			// Dimensions
-			var	MARGINS_2 = { top: 20, right: 300, bottom: 130, left: 50 },
-				MARGINS2_2 = { top: 410, right: 300, bottom: 50, left: 50 },
+			var	MARGINS_2 = { top: 20, right: 210, bottom: 130, left: 50 },
+				MARGINS2_2 = { top: 410, right: 210, bottom: 50, left: 50 },
 				WIDTH_2 = +vis_2.attr("width") - MARGINS_2.left - MARGINS_2.right,
 				HEIGHT_2 = +vis_2.attr("height") - MARGINS_2.top - MARGINS_2.bottom,
 				HEIGHT2_2 = +vis_2.attr("height") - MARGINS2_2.top - MARGINS2_2.bottom;
@@ -949,8 +965,8 @@
 			var vis_4 = d3.select("#FertilityRateVsReligion");
 
 			// Dimensions
-			var	MARGINS_4 = { top: 20, right: 200, bottom: 130, left: 50 },
-				MARGINS2_4 = { top: 410, right: 200, bottom: 50, left: 50 },
+			var	MARGINS_4 = { top: 20, right: 160, bottom: 130, left: 50 },
+				MARGINS2_4 = { top: 410, right: 160, bottom: 50, left: 50 },
 				WIDTH_4 = +vis.attr("width") - MARGINS_4.left - MARGINS_4.right,
 				HEIGHT_4 = +vis.attr("height") - MARGINS_4.top - MARGINS_4.bottom,
 				HEIGHT2_4 = +vis.attr("height") - MARGINS2_4.top - MARGINS2_4.bottom;
