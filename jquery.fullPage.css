@@ -173,9 +173,8 @@ html.fp-enabled,
     z-index: 1;
     height: 4px;
     width: 4px;
-    border-color: white;
-    border-width: 2px;
-    background: blue;
+    border: 0;
+    background: #1ab2ff;
     left: 50%;
     top: 50%;
     margin: -2px 0 0 -2px;
