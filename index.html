@@ -14,15 +14,21 @@
 				Fertility Rate:
 				A curious case of correlations
 			</div>
-			<div class="section">
-				<div id="section1_graph">
-					<svg id="byCountryFertilityRate" width="1000" height="500"></svg>
-				</div>				
+			<div class="section" style="width:100%; height:100%; padding-left:1%; padding-right:1%;">
+				<div style="float: right; width: 70%; text-align: center;">
+					<div style="padding-right: 140px; font-size: 20px; font-weight: bold;">Fertility Rate by region<br/><br/></div>
+					<svg id="byCountryFertilityRate" width="800" height="500"></svg>
+				</div>
+				<div style="float: right; width: 30%;">
+					<div>
+						Hola mundo
+					</div>
+				</div>			
 			</div>
-			<div class="section" style="width:100%; height:100%; padding-left:1.5%;">
+			<div class="section" style="width:100%; height:100%; padding-left:1%; padding-right:1%;">
 				<div style="float: left; width: 70%;">
-					<div id="section2title">Fertility Rate and GDP per capita in <span id="title">1960</span><br/><br/></div>
-					<div id="player">
+					<div style="padding-left: 140px; font-size: 20px; font-weight: bold;">Fertility Rate and GDP per capita in <span id="title">1960</span><br/><br/></div>
+					<div style="padding-left: 55px;">
 						<button name="play" id="play">Play</button>&nbsp;&nbsp;&nbsp;&nbsp;
 						<input id="slider" style="width:400px;" type="range" min="1960" max="2015" value="1960" step="1" />
 						<span id="range">1960</span><br/><br/>
@@ -30,7 +36,7 @@
 					<svg id="FertilityRateVsGDP" width="800" height="450"></svg>
 				</div>
 				<div style="float: right; width: 30%;">
-					<div id="section2_text">
+					<div>
 						Hola mundo
 					</div>
 				</div>
@@ -72,8 +78,8 @@
 			var vis = d3.select("#byCountryFertilityRate");
 
 			// Dimensions
-			var	MARGINS = { top: 20, right: 300, bottom: 130, left: 50 },
-				MARGINS2 = { top: 410, right: 300, bottom: 50, left: 50 },
+			var	MARGINS = { top: 20, right: 210, bottom: 130, left: 50 },
+				MARGINS2 = { top: 410, right: 210, bottom: 50, left: 50 },
 				WIDTH = +vis.attr("width") - MARGINS.left - MARGINS.right,
 				HEIGHT = +vis.attr("height") - MARGINS.top - MARGINS.bottom,
 				HEIGHT2 = +vis.attr("height") - MARGINS2.top - MARGINS2.bottom;
