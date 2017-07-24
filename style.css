@@ -53,10 +53,7 @@ body {
 }
 
 #section2_graph {
-  display: block;
-  margin: auto;
   padding-left: 1.5%;
-  text-align: left;
 }
 
 #player {
