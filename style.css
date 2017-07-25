@@ -53,6 +53,15 @@ body {
   stroke-width: 0;
 }
 
+.bodyText {
+  font-size: 13.5px;
+  font-family: 'Raleway', sans-serif;
+/*  -webkit-margin-before: 0.2em;
+  -webkit-margin-after: 0.2em;*/
+  color:#404040;
+  text-align: justify;
+}
+
 #play {
   display: inline-block;
   width: 60px;

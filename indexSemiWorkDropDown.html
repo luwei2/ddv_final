@@ -10,21 +10,8 @@
 	</head>
 	<body>
 		<div id="wrapper">
-			<div class="section" id="sectionImage1" style="width:100%; height:100%; padding-left:1.5%; padding-right:1.5%;">
-				<div style="float: left; width: 47%;">
-					<div style="font-size: 80px; font-weight: bold; color:#1a1a1a;">Fertility Rate<br/></div>
-					<p style="font-size: 33.5px; -webkit-margin-before: 0.2em; -webkit-margin-after: 0.2em; color:#404040;">A curious case of correlations</p><br/><br/>
-					<div class="bodyText"><div style="font-size: 16px; font-weight: bold; color:#1a1a1a;">What’s Fertility Rate? </div></br>
-					“Number of children that would be born to a woman if she were to live to the end of her childbearing years.” (World Bank)</br></br>
-					<div style="font-size: 16px; font-weight: bold; color:#1a1a1a;">What are the questions? </div></br>
-					&nbsp;&nbsp;&nbsp;&nbsp;1.	Does Fertility Rate impact economy and happiness?</br>
-					&nbsp;&nbsp;&nbsp;&nbsp;2.	Is it religion related to Fertility Rate?</br></br>
-					<div style="font-size: 16px; font-weight: bold; color:#1a1a1a;">Why?</div></br>
-					If Fertility Rate impacts people’s happiness and economy, then an incentive exists to reduce Fertility Rate on poor and unhappy countries.</br></br>
-					If religion has an impact on Fertility Rate, then governments should consider become secular states to avoid religion dealing with anticonceptive methods and sexual education.</br></br>
-					<div style="font-size: 16px; font-weight: bold; color:#1a1a1a;">What about this visualization?</div></br>
-					Over the next few slides you’ll have the opportunity to draw your own conclusion. Explore the data and play with it. This is just a curious case of correlations.</div>
-				</div>
+			<div class="section" id="sectionImage1" style="width:100%; height:100%; padding-left:3%; padding-right:3%;">
+				<div style="font-size: 100px; font-weight: bold; color:#1a1a1a;">Fertility Rate<br/></div><p style="font-size: 42px; -webkit-margin-before: 0.2em; -webkit-margin-after: 0.2em; color:#404040;">A curious case of correlations</p><br/>
 			</div>
 			<div class="section" style="width:100%; height:100%; padding-left:1%; padding-right:1%;">
 				<div style="float: right; width: 70%; text-align: center;">
@@ -234,8 +221,7 @@
 						.attr("r", 2.5)
 						.attr("cx", function(v) { return xScale(v.Year); })
 						.attr("cy", function(v) { return yScale(v.Fertility_Rate); })
-						.attr("class", "line")
-						// Set ID with region to each line to easily filter
+						.attr("class", "line point "+d.key.replace(/\s+/g, ''))
 						.attr('id', function(v) { return 'point_'+v.Region.replace(/\s+/g, ''); })
 						.attr('clip-path', 'url(#clip)')
 						.on("mouseover", function(v) {
@@ -255,7 +241,7 @@
 					// Draw the line graphs on focus section
 					focus.append("path")
 						.datum(d.values)
-						.attr("class", "line")
+						.attr("class", "line "+d.key.replace(/\s+/g, ''))
 					    .attr('stroke-width', 1)
 					    .attr('fill', 'none')
 					    // Set ID with region to each line to easily filter
@@ -266,13 +252,45 @@
 					// Draw the line graphs on context section
 					context.append("path")
 						.datum(d.values)
-						.attr("class", "line")
+						.attr("class", "line "+d.key.replace(/\s+/g, ''))
 						.attr('stroke-width', 1)
 					    .attr('fill', 'none')
 					    // Set ID with region to each line to easily filter
 					    .attr('id', 'line_'+d.values[0].Region.replace(/\s+/g, ''))
 					    .attr('clip-path', 'url(#clip)')
 						.attr("d", lineGen2(d.values));
+
+					vis.append("text")
+						//.attr("class", "legend")
+						.attr("x", WIDTH + MARGINS.left + 90)
+						.attr("y", 30 + i * 20)
+						.style("fill", "black")
+						.text(d.key)
+						//.attr('id', function(v) { return 'legendText_'+v.Country_Name.replace(/\s+/g, ''); })
+						// .on("mouseover", function(v) {
+						// 	var shadow = "2px 2px 2px #808080";
+						// 	//d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 1).style("stroke", "black");
+						// 	d3.selectAll("#legendText_"+d.values[0].Region.replace(/\s+/g, '')).style("text-shadow", shadow);
+						// })
+						// .on("mouseout", function(v) {
+						// 	var shadow = "2px 2px 2px #aaa";
+						// 	//d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("stroke-width", 0).style("stroke", "none");
+						// 	d3.selectAll("#legendText_"+d.values[0].Country_Name.replace(/\s+/g, '')).style("text-shadow", shadow);
+						// })
+						.on('click', function() {
+							var active = d.active ? false : true;
+							//var opacity = active ? 0 : 1;
+							//var legendOpacity = active ? 0.3 : 1;
+							//var shadow = active ? "none" : "2px 2px 2px #aaa";
+							var radius = active ? 0 : 2.5;
+							d3.selectAll(".point").attr("r", 0);
+							d3.selectAll(".line").attr("opacity", 0);
+							d3.selectAll("."+d.key.replace(/\s+/g, '')).attr("r", 2.5).attr("opacity", 1);
+							//d3.selectAll("#point_"+d.values[0].Region.replace(/\s+/g, '')).attr("r", radius);
+							//d3.selectAll("#legendColor_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity);
+							//d3.selectAll("#legendText_"+d.values[0].Country_Name.replace(/\s+/g, '')).style("opacity", legendOpacity).style("text-shadow", shadow);
+							d.active = active;
+						});
 				});
 
 				// For each Region add an interactive legend and specific color
