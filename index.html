@@ -408,6 +408,7 @@
 
 			// ******** Variable definition *********	
 
+			// Div for tooltips
 			var div_2 = d3.select("body").append("div")
 				.attr("class", "tooltip")
 				.style("opacity", 0);
@@ -666,6 +667,7 @@
 
 			// ******** Variable definition *********	
 
+			// Div for tooltips
 			var div_3 = d3.select("body").append("div")
 				.attr("class", "tooltip")
 				.style("opacity", 0);
@@ -698,14 +700,12 @@
 			var	xAxis_3 = d3.axisBottom(xScale_3),
 				yAxis_3 = d3.axisLeft(yScale_3);
 
-			// Append class context that will be used to draw the points in the focus bar
+			// Append class points that will be used to draw the points in the scatter plot
 			var points_3 = vis_3.append("g")
 			    .attr("class", "points_3")
 			    .attr("transform", "translate(" + MARGINS_3.left + "," + MARGINS_3.top + ")");
 
-			// ******** Append section *********	
-
-			// clipPath for context bar
+			// clipPath definition
 			vis_3.append("defs").append("clipPath")
 				.attr("id", "clip_3")
 				.append("rect")
@@ -716,7 +716,8 @@
 
 			// Source of information
 			d3.csv("https://fvargaspiedra.github.io/FRandGDP.csv", function(data) {	
-				// Parse Year and convert Fertility Rate into number
+
+				// Fertility Rate and GDP to number
 				data.forEach(function(d) {
 					d.Fertility_Rate = +d.Fertility_Rate;
 					d.GDP_Per_Capita = +d.GDP_Per_Capita;
@@ -724,23 +725,19 @@
 
 				// Nest data based on Year
 				var dataGroup_3 = d3.nest()
-				    .key(function(d) {
-				        return d.Year;
-				    })
+				    .key(function(d) { return d.Year; })
 				    .entries(data);
 
 				// Nest data based on Region
 				var dataRegion_3 = d3.nest()
-				    .key(function(d) {
-				        return d.Region;
-				    })
+				    .key(function(d) { return d.Region; })
 				    .entries(data);
 
 				// Set domain for ranges dynamically based on data
 				xScale_3.domain([d3.min(data, function(d) { return d.GDP_Per_Capita; }) - 100, d3.max(data, function(d) { return d.GDP_Per_Capita; }) + 5000])
 				yScale_3.domain([0, d3.max(data, function(d) { return d.Fertility_Rate; }) + 1]);
 
-				// add the X gridlines
+				// Add the grid lines to X-Axis
 				points_3.append("g")			
 					.attr("class", "grid")
 					.attr("transform", "translate(0," + HEIGHT_3 + ")")
@@ -749,26 +746,30 @@
 						.tickFormat("")
 					)
 
-				// add the Y gridlines
+				// Add the grid lines to Y-Axis
 				points_3.append("g")			
-				.attr("class", "grid")
-				.call(make_y_gridlines_3()
-					.tickSize(-WIDTH_3)
-					.tickFormat("")
-				) 
+					.attr("class", "grid")
+					.call(make_y_gridlines_3()
+						.tickSize(-WIDTH_3)
+						.tickFormat("")
+					) 
 
 				// Max GDP value to calculate radius
 				var maxGDP = d3.max(data, function(d) { return d.GDP_Per_Capita; });
 
+				// Get default slider value
 				var sliderValue = $("#slider").val();
 
-				// For each Country Name draw a line graph
+				// For each Country Name draw a line graph only if it is the country of the default slider value
 				dataGroup_3.forEach(function(d, i) {
 					if(d.key==$("#slider").val()) {
+
 						// Add the dots with tooltips
 						points_3.selectAll("dot")
 							.data(d.values)
 							.enter().append("circle")
+							// The dataset has -1 when value is not present, for those cases
+							// we create the dot but it's invisible.
 							.attr("r", function(v) {
 								if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 									return 0;
@@ -809,9 +810,10 @@
 					}
 				});
 
-				// For each Region add a legend
+				// For each Region add a legend and set the color
 				dataRegion_3.forEach(function(d, i) {
-					// Create legend for each region
+
+					// Create legend text for each region
 					vis_3.append("text")
 						.attr("class", "legend")
 						.attr("x", WIDTH_3 + MARGINS_3.left + 30)
@@ -839,6 +841,8 @@
 							d3.selectAll("#legendText_3_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity).style("text-shadow", shadow);
 							d.active = active;
 						});
+
+					// Create colored rectancle for each region	
 					vis_3.append("rect")
 						.attr("x", WIDTH_3 + MARGINS_3.left + 15)
 						.attr("y", HEIGHT_3/2 + i * 20 - 10)
@@ -866,17 +870,18 @@
 							d3.selectAll("#legendText_3_"+d.values[0].Region.replace(/\s+/g, '')).style("opacity", legendOpacity).style("text-shadow", shadow);
 							d.active = active;
 						});
-					// Set line color by region
+
+					// Set dots color by region
 					points_3.selectAll("#point_3_"+d.values[0].Region.replace(/\s+/g, '')).attr('fill', color(i));
 				});
 
-				// Set X axis to focus section
+				// Set X axis to scatter plot section
 				points_3.append("g")
 					.attr("class", "axis axis--x")
 					.attr("transform", "translate(0," + HEIGHT_3 + ")")
 					.call(xAxis_3);
 
-				// Set Y axis to focus section
+				// Set Y axis to scatter plot section
 				points_3.append("g")
 					.attr("class", "axis axis--y")
 					.call(yAxis_3);
@@ -893,13 +898,19 @@
 					.style("text-anchor", "middle")
 					.text("Fertility Rate (births per woman)");    
 	
+				// Boolean variable to control whether Play was pressed or not
 				var running = false;
+
+				// Variable to set duration of iterations when Play is pressed
 				var timer;
 
+				// Define action when Play is clicked
 				$("button").on("click", function() {
+
 					var duration = 300,
 					maxstep = 2015,
 					minstep = 1960;
+
 					if (running == true) {
 						$("button").html("Play");
 						running = false;
@@ -925,6 +936,7 @@
 					}
 				});
 
+				// Define action when slider is changed
 				$("#slider").on("change", function(){
 					update();
 					$("#range").html($("#slider").val());
@@ -934,14 +946,17 @@
 					running = false;
 				});
 
+				// Function to update scatter plot when slider is changed or Play is pressed
 				update = function() {
-					// For each Country Name draw a line graph
+
+					// For each Year draw the right information only when slider coincides with year's value
 					dataGroup_3.forEach(function(d, i) {
 						if(d.key==$("#slider").val()) {
+							// Draw the right dots
 							points_3.selectAll(".line_3")
 								.data(d.values)
-								//.transition()
-								//.duration(1000)
+								// The dataset has -1 when value is not present, for those cases
+								// we create the dot but it's invisible.
 								.attr("r", function(v) {
 									if(v.GDP_Per_Capita == -1 || v.Fertility_Rate == -1) {
 										return 0;
@@ -966,7 +981,6 @@
 						}
 					});
 				}
-
 			});	
 
 			// ***************************************************
@@ -975,6 +989,7 @@
 
 			// ******** Variable definition *********	
 			
+			// Div for tooltips
 			var div_4 = d3.select("body").append("div")
 				.attr("class", "tooltip")
 				.style("opacity", 0);
@@ -1074,7 +1089,7 @@
 				xScale2_4.domain(xScale_4.domain());
 				yScale2_4.domain(yScale_4.domain());
 
-				// add the X gridlines
+				// Add the grid lines to X-Axis
 				focus_4.append("g")			
 					.attr("class", "grid")
 					.attr("transform", "translate(0," + HEIGHT_4 + ")")
@@ -1083,7 +1098,7 @@
 						.tickFormat("")
 					)
 
-				// add the Y gridlines
+				// Add the grid lines to X-Axis
 				focus_4.append("g")			
 					.attr("class", "grid")
 					.call(make_y_gridlines_4()
