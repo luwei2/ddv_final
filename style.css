@@ -72,16 +72,16 @@ body {
   text-decoration: none;
   outline: none;
   color: #fff;
-  background-color: #4CAF50;
+  background-color: #07a1df;
   border: none;
   border-radius: 5px;
   box-shadow: 0 3px #999;
 }
 
-#play:hover {background-color: #3e8e41}
+#play:hover {background-color: #045a7c}
 
 #play:active {
-  background-color: #3e8e41;
+  background-color: #045a7c;
   box-shadow: 0 1px #666;
   transform: translateY(2px);
 }
